@@ -31,25 +31,18 @@ export const metadata: Metadata = {
     "interface design",
   ],
   openGraph: {
+    // Images come from the opengraph-image files, so each route gets its own generated card.
     title: "Deltech | Technology that moves the work forward",
     description: siteConfig.description,
     type: "website",
     siteName: "Deltech",
     url: "/",
-    images: [
-      {
-        url: "/deltech-technology-hero.png",
-        width: 1672,
-        height: 940,
-        alt: "Deltech technology consulting, software and AI services",
-      },
-    ],
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: "Deltech | Consulting, software and AI",
     description: siteConfig.description,
-    images: ["/deltech-technology-hero.png"],
   },
   icons: {
     icon: "/icon.png",
