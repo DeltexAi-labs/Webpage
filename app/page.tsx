@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { SiFigma, SiNextdotjs, SiPython, SiReact, SiTypescript } from "react-icons/si";
 
 import { ArrowIcon } from "@/components/arrow-icon";
 import { ContactForm } from "@/components/contact-form";
@@ -258,11 +259,11 @@ export default function Home() {
 
             <Reveal className="ai-team" delay={0.16} distance={16}>
               <div className="ai-team-lead">
-                <span className="ai-team-dots" aria-hidden="true">
-                  <i />
-                  <i />
-                  <i />
-                  <i />
+                <span className="ai-team-logos" aria-label="Technologies used by Deltech">
+                  <span title="Next.js"><SiNextdotjs aria-hidden="true" /></span>
+                  <span title="React"><SiReact aria-hidden="true" /></span>
+                  <span title="Python"><SiPython aria-hidden="true" /></span>
+                  <span title="TypeScript"><SiTypescript aria-hidden="true" /></span>
                 </span>
                 <p>
                   <strong>An experienced team.</strong> Every engagement is staffed with people who have
@@ -392,12 +393,27 @@ export default function Home() {
               Small, senior, and glad to be building. People who enjoy the work do better work—and they
               stay on your project long enough to finish it properly.
             </p>
-            <div className="team-avatars" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-              <i />
-              <i />
+            <div className="team-photo-card">
+              <Image
+                className="team-photo-image"
+                src="/deltech-team-collaboration.png"
+                alt="Three product and software professionals collaborating around a laptop"
+                fill
+                sizes="(max-width: 1020px) 100vw, 46vw"
+              />
+              <div className="team-photo-caption">
+                <span>Collaborative delivery</span>
+                <strong>Product · Design · Engineering</strong>
+              </div>
+            </div>
+            <div className="team-tool-row" aria-label="Tools Deltech builds with">
+              <span>Tools we build with</span>
+              <ul>
+                <li><SiNextdotjs aria-hidden="true" /> Next.js</li>
+                <li><SiReact aria-hidden="true" /> React</li>
+                <li><SiPython aria-hidden="true" /> Python</li>
+                <li><SiFigma aria-hidden="true" /> Figma</li>
+              </ul>
             </div>
             <p className="team-availability">
               <span className="status-dot" />
