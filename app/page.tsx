@@ -61,6 +61,22 @@ const aiCapabilities = [
   },
 ];
 
+const aiFlow = [
+  { stage: "Task", copy: "One business decision or process worth improving." },
+  { stage: "Grounding", copy: "Approved, current information the system may rely on." },
+  { stage: "System", copy: "Model, tools, and guardrails sized to the job." },
+  { stage: "Review", copy: "Human checkpoints wherever the cost of error is real." },
+  { stage: "Evidence", copy: "Measured against the process it replaces." },
+];
+
+const aiTeamRoles = [
+  "Machine learning engineers",
+  "Data engineers",
+  "Software architects",
+  "Product designers",
+  "Delivery leads",
+];
+
 const contactPhoneHref = `tel:${siteConfig.contactPhone.replace(/[^\d+]/g, "")}`;
 
 const organizationSchema = {
@@ -180,39 +196,67 @@ export default function Home() {
       </section>
 
       <section className="section ai-section" id="ai">
-        <div className="shell ai-layout">
-          <Reveal className="ai-copy" distance={20}>
-            <p className="eyebrow ai-eyebrow">AI, designed for real work</p>
-            <h2>Put AI where it creates a measurable advantage.</h2>
-            <p>
-              We design and integrate AI around a clear business task, reliable source information, human
-              oversight, and evidence that the result is better than the current process.
-            </p>
-            <Link className="button button-mint" href="/services#ai-automation">
-              Explore AI services <ArrowIcon />
-            </Link>
-            <div className="ai-team">
-              <span className="ai-team-dots" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <i />
-              </span>
-              <p>
-                <strong>An experienced team.</strong> Machine learning and data engineers, software
-                architects, and product designers who have delivered systems in production.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal className="ai-capability-grid" delay={0.12} distance={20}>
-            {aiCapabilities.map((capability) => (
-              <article key={capability.number}>
-                <span>{capability.number}</span>
-                <h3>{capability.title}</h3>
-                <p>{capability.copy}</p>
-              </article>
-            ))}
-          </Reveal>
+        <div className="shell">
+          <div className="ai-panel">
+            <Reveal className="ai-panel-head" distance={20}>
+              <div>
+                <p className="eyebrow ai-eyebrow"><span /> AI, designed for real work</p>
+                <h2>Put AI where it creates a measurable advantage.</h2>
+              </div>
+              <div className="ai-panel-lead">
+                <p>
+                  We design and integrate AI around a clear business task, reliable source information,
+                  human oversight, and evidence that the result is better than the current process. No
+                  pilot is called a success until the numbers say so.
+                </p>
+                <Link className="button button-mint" href="/services#ai-automation">
+                  Explore AI services <ArrowIcon />
+                </Link>
+              </div>
+            </Reveal>
+
+            <Reveal className="ai-flow" delay={0.08} distance={18}>
+              {aiFlow.map((stage) => (
+                <article key={stage.stage}>
+                  <span className="ai-flow-node" aria-hidden="true">
+                    <i />
+                  </span>
+                  <strong>{stage.stage}</strong>
+                  <p>{stage.copy}</p>
+                </article>
+              ))}
+            </Reveal>
+
+            <Reveal className="ai-capability-grid" delay={0.12} distance={20}>
+              {aiCapabilities.map((capability) => (
+                <article key={capability.number}>
+                  <span>{capability.number}</span>
+                  <h3>{capability.title}</h3>
+                  <p>{capability.copy}</p>
+                </article>
+              ))}
+            </Reveal>
+
+            <Reveal className="ai-team" delay={0.16} distance={16}>
+              <div className="ai-team-lead">
+                <span className="ai-team-dots" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                <p>
+                  <strong>An experienced team.</strong> Every engagement is staffed with people who have
+                  delivered systems in production, not a handover to juniors after the pitch.
+                </p>
+              </div>
+              <ul className="ai-team-roles">
+                {aiTeamRoles.map((role) => (
+                  <li key={role}>{role}</li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
         </div>
       </section>
 
