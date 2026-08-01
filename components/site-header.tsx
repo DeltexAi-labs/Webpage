@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ArrowIcon } from "@/components/arrow-icon";
 import { BrandMark } from "@/components/brand-mark";
+import { MobileMenu } from "@/components/mobile-menu";
 import { primaryContactHref } from "@/lib/site";
 
 const navigation = [
@@ -32,19 +33,7 @@ export function SiteHeader() {
           Start a project <ArrowIcon />
         </a>
 
-        <details className="mobile-menu">
-          <summary aria-label="Open navigation">
-            <span />
-            <span />
-          </summary>
-          <nav aria-label="Mobile navigation">
-            {navigation.map((item) => (
-              <Link href={item.href} key={item.href}>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </details>
+        <MobileMenu navigation={navigation} ctaHref={primaryContactHref} />
       </div>
     </header>
   );
