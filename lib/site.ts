@@ -1,4 +1,5 @@
-const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000";
+const configuredSiteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://webpage-deltex1.vercel.app";
 
 export const siteConfig = {
   name: "Deltech",

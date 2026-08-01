@@ -72,16 +72,16 @@ export function renderOgImage({ eyebrow, title, description, tags = defaultTags 
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                width: 72,
-                height: 72,
+                width: 88,
+                height: 88,
                 overflow: "hidden",
-                border: "1px solid rgba(255,255,255,0.14)",
-                borderRadius: 20,
+                border: "1px solid rgba(255,255,255,0.16)",
+                borderRadius: 24,
                 background: "rgba(255,255,255,0.06)",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders raw img only. */}
-              <img src={logoDataUri} width={72} height={72} alt="" style={{ objectFit: "cover" }} />
+              <img src={logoDataUri} width={88} height={88} alt="" style={{ objectFit: "cover" }} />
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", fontSize: 34, fontWeight: 700, letterSpacing: -1.2 }}>
