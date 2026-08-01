@@ -172,15 +172,18 @@ select {
 
 .button {
   display: inline-flex;
-  min-height: 50px;
+  min-height: 46px;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 0 21px;
+  gap: 9px;
+  padding: 0 19px;
   border: 1px solid transparent;
   border-radius: 8px;
-  font-size: 0.91rem;
-  font-weight: 800;
+  font-size: 0.845rem;
+  font-weight: 750;
+  letter-spacing: -0.012em;
+  line-height: 1;
+  white-space: nowrap;
   transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
 }
 
@@ -189,9 +192,9 @@ select {
 }
 
 .button-small {
-  min-height: 40px;
-  padding-inline: 16px;
-  font-size: 0.8rem;
+  min-height: 38px;
+  padding-inline: 15px;
+  font-size: 0.78rem;
 }
 
 .button-ink {
@@ -345,13 +348,14 @@ a:hover .arrow-icon {
 
 .hero-note {
   display: flex;
-  max-width: 600px;
+  max-width: 560px;
   align-items: flex-start;
-  gap: 10px;
-  margin-top: 28px;
+  gap: 9px;
+  margin-top: 26px;
   color: #b9cad4;
-  font-size: 0.78rem;
-  line-height: 1.5;
+  font-size: 0.755rem;
+  letter-spacing: -0.005em;
+  line-height: 1.55;
 }
 
 .hero-note > span:last-child {
@@ -2208,13 +2212,24 @@ a:hover .arrow-icon {
   }
 
   .button-row {
-    align-items: stretch;
-    flex-direction: column;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
     width: 100%;
   }
 
   .button-row .button {
-    width: 100%;
+    flex: 1 1 auto;
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 0.8rem;
+  }
+
+  .hero-note {
+    margin-top: 22px;
+    font-size: 0.72rem;
   }
 
   .hero-strip {
