@@ -74,6 +74,7 @@ the XML sitemap, robots host declaration, social metadata, and structured-data U
 - `components/json-ld.tsx` — safe JSON-LD serialization for Organization and Service data
 - `public/deltech-logo.png` — web-ready logo prepared from the supplied Deltech artwork
 - `public/deltech-technology-hero.png` — prepared hero background based on the supplied technology image
+- `public/deltech-team-collaboration.png` — representative three-person collaboration image for the Team section
 
 ## Logo preparation
 
@@ -83,3 +84,7 @@ tighter crop, centered composition, and edge cleanup while preserving the origin
 The supplied technology image was also prepared with the built-in image editing workflow as a wide hero
 background. Its globe, tablet, map, and network concept were preserved while the left side was simplified and
 darkened for readable website copy.
+
+The Team-section image was generated with the built-in image workflow as a natural, horizontal workplace
+photograph of exactly three product and software professionals collaborating around a laptop. It is labeled
+as representative imagery on the page and does not claim to depict Deltech employees.

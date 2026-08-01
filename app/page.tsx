@@ -402,7 +402,7 @@ export default function Home() {
                 sizes="(max-width: 1020px) 100vw, 46vw"
               />
               <div className="team-photo-caption">
-                <span>Collaborative delivery</span>
+                <span>Representative team collaboration</span>
                 <strong>Product · Design · Engineering</strong>
               </div>
             </div>
