@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+import { clientReceiptEmail, internalEnquiryEmail, type EnquiryDetails } from "@/lib/emails";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -25,19 +27,6 @@ function cleanText(value: unknown, maxLength: number) {
 function cleanMessage(value: unknown, maxLength: number) {
   if (typeof value !== "string") return "";
   return value.replace(/\u0000/g, "").trim().slice(0, maxLength);
-}
-
-function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, (character) => {
-    const entities: Record<string, string> = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;",
-    };
-    return entities[character];
-  });
 }
 
 function isRateLimited(identifier: string) {
@@ -107,36 +96,33 @@ export async function POST(request: NextRequest) {
     auth: { user: smtpUser, pass: smtpPass },
   });
 
-  const safeName = escapeHtml(name);
-  const safeEmail = escapeHtml(email);
-  const safePhone = escapeHtml(phone || "Not supplied");
-  const safeService = escapeHtml(service);
-  const safeMessage = escapeHtml(message).replace(/\n/g, "<br />");
+  const details: EnquiryDetails = { name, email, phone, service, message, submittedAt: new Date() };
+  const internal = internalEnquiryEmail(details);
 
   try {
     await transporter.sendMail({
       from: `Deltech website <${smtpUser}>`,
       to: recipient,
       replyTo: email,
-      subject: `New Deltech enquiry — ${service}`,
-      text: [
-        `Name: ${name}`,
-        `Email: ${email}`,
-        `Phone: ${phone || "Not supplied"}`,
-        `Service: ${service}`,
-        "",
-        message,
-      ].join("\n"),
-      html: `
-        <h2>New Deltech project enquiry</h2>
-        <p><strong>Name:</strong> ${safeName}</p>
-        <p><strong>Email:</strong> ${safeEmail}</p>
-        <p><strong>Phone:</strong> ${safePhone}</p>
-        <p><strong>Service:</strong> ${safeService}</p>
-        <hr />
-        <p>${safeMessage}</p>
-      `,
+      subject: internal.subject,
+      text: internal.text,
+      html: internal.html,
     });
+
+    // The confirmation is a courtesy: a failure here must not tell the sender their enquiry was lost.
+    const receipt = clientReceiptEmail(details);
+    try {
+      await transporter.sendMail({
+        from: `Deltech <${smtpUser}>`,
+        to: email,
+        replyTo: recipient,
+        subject: receipt.subject,
+        text: receipt.text,
+        html: receipt.html,
+      });
+    } catch (error) {
+      console.error("Contact confirmation delivery failed", error);
+    }
 
     return NextResponse.json({ message: "Thanks—your project enquiry has been sent to Deltech." });
   } catch (error) {

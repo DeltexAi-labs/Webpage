@@ -1,21 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 import { ArrowIcon } from "@/components/arrow-icon";
+import { Toast, type ToastData } from "@/components/toast";
 
 type SubmissionState = "idle" | "sending" | "success" | "error";
 
 export function ContactForm() {
   const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
   const [feedback, setFeedback] = useState("");
+  const [toast, setToast] = useState<ToastData | null>(null);
+  const toastId = useRef(0);
+
+  const dismissToast = useCallback(() => setToast(null), []);
+
+  function showToast(tone: ToastData["tone"], title: string, message: string) {
+    toastId.current += 1;
+    setToast({ id: toastId.current, tone, title, message });
+  }
 
   async function submitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     setSubmissionState("sending");
     setFeedback("");
+    setToast(null);
 
     try {
       const response = await fetch("/api/contact", {
@@ -31,14 +42,20 @@ export function ContactForm() {
 
       form.reset();
       setSubmissionState("success");
-      setFeedback(result.message || "Thanks—your project enquiry has been sent to Deltech.");
+      const message = result.message || "Thanks—your project enquiry has been sent to Deltech.";
+      setFeedback(message);
+      showToast("success", "Enquiry sent", "A confirmation is on its way to your inbox. We reply within one working day.");
     } catch (error) {
+      const message = error instanceof Error ? error.message : "We could not send your message.";
       setSubmissionState("error");
-      setFeedback(error instanceof Error ? error.message : "We could not send your message.");
+      setFeedback(message);
+      showToast("error", "Message not sent", message);
     }
   }
 
   return (
+    <>
+    <Toast toast={toast} onDismiss={dismissToast} />
     <form className="contact-form" onSubmit={submitForm}>
       <div className="form-heading">
         <span>Project enquiry</span>
@@ -100,5 +117,6 @@ export function ContactForm() {
         {feedback}
       </p>
     </form>
+    </>
   );
 }
