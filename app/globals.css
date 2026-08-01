@@ -273,10 +273,10 @@ a:hover .arrow-icon {
   position: relative;
   z-index: 2;
   display: grid;
-  min-height: 700px;
+  min-height: 620px;
   grid-template-columns: minmax(0, 700px);
   align-items: center;
-  padding: 92px 0 104px;
+  padding: 84px 0 92px;
 }
 
 .hero-copy {
@@ -316,7 +316,7 @@ a:hover .arrow-icon {
 .hero h1 {
   max-width: 720px;
   margin: 0;
-  font-size: clamp(3.5rem, 6.3vw, 6.5rem);
+  font-size: clamp(2.6rem, 5.2vw, 5.2rem);
   font-weight: 760;
   letter-spacing: -0.065em;
   line-height: 0.92;
@@ -330,9 +330,9 @@ a:hover .arrow-icon {
 
 .hero-intro {
   max-width: 630px;
-  margin: 30px 0 0;
+  margin: 26px 0 0;
   color: #e0e9ee;
-  font-size: clamp(1.04rem, 1.8vw, 1.24rem);
+  font-size: clamp(1rem, 1.35vw, 1.1rem);
   line-height: 1.68;
 }
 
@@ -500,68 +500,91 @@ a:hover .arrow-icon {
 .detailed-service-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
+  gap: 18px;
 }
 
 .service-card {
+  --accent: var(--mint-strong);
   position: relative;
   display: flex;
   min-height: 350px;
   flex-direction: column;
-  padding: 30px;
+  padding: 28px 28px 30px;
   overflow: hidden;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.52);
-  transition: background 180ms ease, transform 180ms ease;
+  border: 1px solid rgba(7, 19, 31, 0.07);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.62) 100%);
+  box-shadow: 0 1px 2px rgba(7, 19, 31, 0.04);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease, border-color 220ms ease;
 }
 
 .service-card::before {
   position: absolute;
+  top: -70px;
+  right: -70px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+  content: "";
+  opacity: 0.16;
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+.service-card::after {
+  position: absolute;
   top: 0;
-  right: 0;
-  width: 100px;
-  height: 100px;
-  border-radius: 0 0 0 100%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent 78%);
   content: "";
   opacity: 0;
-  transform: translate(20%, -20%);
-  transition: opacity 180ms ease, transform 180ms ease;
+  transform: scaleX(0.2);
+  transform-origin: left;
+  transition: opacity 260ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.service-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .service-card:hover {
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: none;
-  transform: none;
+  border-color: rgba(7, 19, 31, 0.12);
+  box-shadow: 0 18px 44px rgba(7, 19, 31, 0.09);
+  transform: translateY(-4px);
 }
 
 .service-card:hover::before {
-  opacity: 0.08;
-  transform: translate(20%, -20%);
+  opacity: 0.3;
+  transform: scale(1.12);
 }
 
-.accent-blue::before,
-.accent-blue .service-pulse {
-  background: var(--blue);
+.service-card:hover::after {
+  opacity: 1;
+  transform: scaleX(1);
 }
 
-.accent-mint::before,
-.accent-mint .service-pulse {
-  background: var(--mint-strong);
+.accent-blue {
+  --accent: var(--blue);
 }
 
-.accent-violet::before,
-.accent-violet .service-pulse {
-  background: var(--violet);
+.accent-mint {
+  --accent: var(--mint-strong);
 }
 
-.accent-amber::before,
-.accent-amber .service-pulse {
-  background: var(--amber);
+.accent-violet {
+  --accent: var(--violet);
+}
+
+.accent-amber {
+  --accent: var(--amber);
 }
 
 .service-card-top {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -570,15 +593,30 @@ a:hover .arrow-icon {
   font-size: 0.68rem;
 }
 
+.service-card-top > span:first-child {
+  padding: 5px 11px;
+  border: 1px solid rgba(7, 19, 31, 0.09);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.08em;
+}
+
 .service-pulse {
   width: 9px;
   height: 9px;
   border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+  transition: box-shadow 260ms ease;
+}
+
+.service-card:hover .service-pulse {
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .service-card h3 {
   max-width: 300px;
-  margin: 63px 0 14px;
+  margin: 56px 0 14px;
   font-size: 1.45rem;
   font-weight: 820;
   letter-spacing: -0.035em;
@@ -1459,14 +1497,47 @@ a:hover .arrow-icon {
 }
 
 .page-hero {
+  position: relative;
+  overflow: hidden;
   padding: 110px 0 100px;
-  background:
-    radial-gradient(circle at 84% 20%, rgba(117, 167, 255, 0.18), transparent 25%),
-    var(--ink);
+  background: var(--ink);
   color: var(--white);
 }
 
+.page-hero-background-image {
+  position: absolute;
+  z-index: 0;
+  object-fit: cover;
+  object-position: center;
+}
+
+.page-hero::before,
+.page-hero::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+}
+
+.page-hero::before {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(3, 11, 20, 0.99) 0%, rgba(4, 16, 29, 0.93) 34%, rgba(4, 18, 34, 0.62) 57%, rgba(4, 14, 27, 0.2) 82%),
+    linear-gradient(0deg, rgba(3, 12, 22, 0.72) 0%, transparent 52%);
+}
+
+.page-hero::after {
+  z-index: 1;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
 .page-hero-grid {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.55fr);
   align-items: end;
@@ -1476,7 +1547,7 @@ a:hover .arrow-icon {
 .page-hero h1 {
   max-width: 760px;
   margin: 0;
-  font-size: clamp(3.5rem, 7vw, 7.2rem);
+  font-size: clamp(3rem, 5.6vw, 5.6rem);
   font-weight: 750;
   letter-spacing: -0.07em;
   line-height: 0.92;
@@ -1503,19 +1574,21 @@ a:hover .arrow-icon {
 }
 
 .detailed-service-grid .service-card h3 {
-  margin-top: 50px;
-  font-size: 2rem;
+  margin-top: 44px;
+  font-size: 1.75rem;
 }
 
 .service-outcome {
-  margin-top: 30px;
-  padding: 18px;
-  border-left: 2px solid var(--mint-strong);
-  background: #eff4f0;
+  margin-top: 28px;
+  padding: 16px 18px;
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  border-left: 2px solid var(--accent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 9%, rgba(255, 255, 255, 0.7));
 }
 
 .service-outcome span {
-  color: #59806e;
+  color: #46606f;
   font-size: 0.62rem;
   font-weight: 900;
   letter-spacing: 0.13em;
@@ -1547,12 +1620,13 @@ a:hover .arrow-icon {
 
 .service-card li::before {
   position: absolute;
-  top: 0.55em;
+  top: 0.5em;
   left: 0;
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--mint-strong);
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
   content: "";
 }
 
@@ -1787,8 +1861,15 @@ a:hover .arrow-icon {
     min-height: auto;
   }
 
-  .hero-background-image {
+  .hero-background-image,
+  .page-hero-background-image {
     object-position: 68% center;
+  }
+
+  .page-hero::before {
+    background:
+      linear-gradient(90deg, rgba(3, 11, 20, 0.98) 0%, rgba(4, 16, 29, 0.91) 62%, rgba(4, 14, 27, 0.76) 100%),
+      linear-gradient(0deg, rgba(3, 12, 22, 0.72) 0%, transparent 58%);
   }
 
   .hero::before {
@@ -1798,8 +1879,8 @@ a:hover .arrow-icon {
   }
 
   .hero-grid {
-    min-height: 720px;
-    padding: 78px 0 70px;
+    min-height: 560px;
+    padding: 64px 0 58px;
   }
 
   .hero-copy {
@@ -1809,11 +1890,11 @@ a:hover .arrow-icon {
 
   .hero h1,
   .page-hero h1 {
-    font-size: clamp(3rem, 14vw, 4.8rem);
+    font-size: clamp(2.15rem, 9.6vw, 3.15rem);
   }
 
   .hero-intro {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .button-row {
@@ -1905,12 +1986,14 @@ a:hover .arrow-icon {
   .service-card,
   .detailed-service-grid .service-card {
     min-height: auto;
-    padding: 26px;
+    padding: 24px;
+    border-radius: 18px;
   }
 
   .service-card h3,
   .detailed-service-grid .service-card h3 {
-    margin-top: 45px;
+    margin-top: 34px;
+    font-size: 1.3rem;
   }
 
   .service-card .text-link {

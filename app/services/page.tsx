@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { ArrowIcon } from "@/components/arrow-icon";
@@ -83,14 +84,22 @@ export default function ServicesPage() {
       <JsonLd data={serviceSchema} />
       <main id="main-content">
       <section className="page-hero">
+        <Image
+          className="page-hero-background-image"
+          src="/deltech-technology-hero.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+        />
         <div className="shell page-hero-grid">
           <div>
             <p className="eyebrow hero-eyebrow"><span /> Services</p>
-            <h1>Capability organized around outcomes.</h1>
+            <h1>Organized around outcomes.</h1>
           </div>
           <p>
-            Deltech combines consulting, product design, engineering, AI, and cloud expertise. Engage one
-            specialty or assemble the mix needed to take a result from idea to operation.
+            Consulting, product design, engineering, AI, and cloud. Engage one specialty or the full mix,
+            from idea to operation.
           </p>
         </div>
       </section>
