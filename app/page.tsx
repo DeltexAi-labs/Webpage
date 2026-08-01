@@ -188,9 +188,21 @@ export default function Home() {
               We design and integrate AI around a clear business task, reliable source information, human
               oversight, and evidence that the result is better than the current process.
             </p>
-            <Link className="button button-blue" href="/services#ai-automation">
+            <Link className="button button-mint" href="/services#ai-automation">
               Explore AI services <ArrowIcon />
             </Link>
+            <div className="ai-team">
+              <span className="ai-team-dots" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+              <p>
+                <strong>An experienced team.</strong> Machine learning and data engineers, software
+                architects, and product designers who have delivered systems in production.
+              </p>
+            </div>
           </Reveal>
           <Reveal className="ai-capability-grid" delay={0.12} distance={20}>
             {aiCapabilities.map((capability) => (
