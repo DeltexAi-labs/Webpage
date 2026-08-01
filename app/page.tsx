@@ -77,6 +77,25 @@ const aiTeamRoles = [
   "Delivery leads",
 ];
 
+const teamTraits = [
+  {
+    title: "Senior by default",
+    copy: "The people who scope your work are the people who build it. No handover to juniors after the pitch.",
+  },
+  {
+    title: "Low ego, high standards",
+    copy: "Direct about trade-offs, quick to say when an idea is not worth building.",
+  },
+  {
+    title: "One team, start to launch",
+    copy: "The same faces from kickoff through release, so context never has to be rebuilt.",
+  },
+  {
+    title: "We like the hard parts",
+    copy: "Messy data, legacy systems, and unclear requirements are the work, not an obstacle to it.",
+  },
+];
+
 const contactPhoneHref = `tel:${siteConfig.contactPhone.replace(/[^\d+]/g, "")}`;
 
 const organizationSchema = {
@@ -361,6 +380,38 @@ export default function Home() {
               <li key={capability}>{capability}</li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section className="section team-section" id="team">
+        <div className="shell team-band">
+          <Reveal className="team-copy" distance={18}>
+            <p className="eyebrow light-eyebrow team-eyebrow"><span /> The people</p>
+            <h2>A happy team, ready to deliver.</h2>
+            <p>
+              Small, senior, and glad to be building. People who enjoy the work do better work—and they
+              stay on your project long enough to finish it properly.
+            </p>
+            <div className="team-avatars" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
+            </div>
+            <p className="team-availability">
+              <span className="status-dot" />
+              Available for new projects this quarter.
+            </p>
+          </Reveal>
+          <Reveal className="team-traits" delay={0.12} distance={18}>
+            {teamTraits.map((trait) => (
+              <article key={trait.title}>
+                <strong>{trait.title}</strong>
+                <p>{trait.copy}</p>
+              </article>
+            ))}
+          </Reveal>
         </div>
       </section>
 
