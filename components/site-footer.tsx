@@ -22,6 +22,11 @@ export function SiteFooter() {
           <Link href="/#process">How we work</Link>
         </div>
         <div>
+          <p className="footer-label">Legal</p>
+          <Link href="/privacy">Privacy policy</Link>
+          <Link href="/terms">Terms of service</Link>
+        </div>
+        <div>
           <p className="footer-label">Contact</p>
           {siteConfig.contactEmail ? (
             <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
@@ -34,7 +39,10 @@ export function SiteFooter() {
       </div>
       <div className="shell footer-bottom">
         <span>© {new Date().getFullYear()} Deltech. All rights reserved.</span>
-        <span>From clear decisions to dependable releases.</span>
+        <nav className="footer-legal-links" aria-label="Legal">
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/terms">Terms</Link>
+        </nav>
       </div>
     </footer>
   );

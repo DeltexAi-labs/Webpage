@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
@@ -110,7 +111,10 @@ export function ContactForm() {
           {submissionState === "sending" ? "Sending…" : "Send project enquiry"}
           {submissionState === "sending" ? null : <ArrowIcon />}
         </button>
-        <p className="form-privacy">Your details are used only to respond to this enquiry.</p>
+        <p className="form-privacy">
+          Your details are used only to respond to this enquiry. See our{" "}
+          <Link href="/privacy">privacy policy</Link>.
+        </p>
       </div>
 
       <p className={`form-feedback ${submissionState}`} aria-live="polite" role="status">
