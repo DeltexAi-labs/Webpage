@@ -3120,11 +3120,15 @@ a:hover .arrow-icon {
     border-radius: 14px;
   }
 
+  /* Full-bleed on phones: the panel breaks out of the shell to span the viewport. */
   .contact-panel {
-    width: calc(100% - 24px);
-    padding: 43px 24px 24px;
-    gap: 40px;
-    border-radius: 16px;
+    width: 100vw;
+    max-width: 100vw;
+    margin-right: 0;
+    margin-left: calc(50% - 50vw);
+    padding: 44px 18px 30px;
+    gap: 34px;
+    border-radius: 0;
   }
 
   .contact-intro h2 {
@@ -3132,8 +3136,8 @@ a:hover .arrow-icon {
   }
 
   .contact-form {
-    padding: 26px 20px;
-    border-radius: 13px;
+    padding: 24px 16px;
+    border-radius: 12px;
   }
 
   .form-heading {
