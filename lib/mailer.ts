@@ -14,7 +14,16 @@ export function readSmtpSettings(): SmtpSettings | null {
   const pass = process.env.SMTP_PASS?.replace(/\s/g, "");
   const recipient = process.env.CONTACT_TO_EMAIL?.trim() || siteConfig.contactEmail;
 
-  if (!user || !pass) return null;
+  if (!user || !pass) {
+    // Names only — never the values. This is the fastest way to spot a missing deployment variable.
+    const missing = [!user && "SMTP_USER", !pass && "SMTP_PASS"].filter(Boolean).join(", ");
+    console.error(
+      `SMTP is not configured: ${missing} missing in this environment. ` +
+        "Set it in the hosting provider's environment variables and redeploy.",
+    );
+    return null;
+  }
+
   return { user, pass, recipient };
 }
 

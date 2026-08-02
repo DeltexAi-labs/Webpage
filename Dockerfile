@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+﻿# syntax=docker/dockerfile:1
 
 # ---- deps: install node_modules against the lockfile only ----
 FROM node:22-alpine AS deps
@@ -13,7 +13,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Baked into the client bundle at build time, so it must be present here, not only at runtime.
-ARG NEXT_PUBLIC_SITE_URL=https://webpage-deltex1.vercel.app
+ARG NEXT_PUBLIC_SITE_URL=https://webpage-ten-kappa.vercel.app
 ARG NEXT_PUBLIC_CONTACT_EMAIL=dlandbigtechnologies@gmail.com
 ARG NEXT_PUBLIC_CONTACT_PHONE=0793472960
 ARG NEXT_PUBLIC_BOOKING_URL=

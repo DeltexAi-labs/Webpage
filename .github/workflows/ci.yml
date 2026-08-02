@@ -1,4 +1,4 @@
-name: CI
+﻿name: CI
 
 on:
   push:
@@ -36,5 +36,5 @@ jobs:
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-          NEXT_PUBLIC_SITE_URL: https://webpage-deltex1.vercel.app
+          NEXT_PUBLIC_SITE_URL: https://webpage-ten-kappa.vercel.app
           NEXT_PUBLIC_CONTACT_EMAIL: dlandbigtechnologies@gmail.com
