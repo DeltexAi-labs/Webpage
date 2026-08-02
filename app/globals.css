@@ -2617,11 +2617,12 @@ a:hover .arrow-icon {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 12px;
+    padding: 13px 12px;
     border-radius: 11px;
     color: #c2d0d8;
-    font-size: 0.92rem;
-    font-weight: 650;
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: -0.022em;
     transition: background 160ms ease, color 160ms ease;
   }
 
@@ -2808,6 +2809,38 @@ a:hover .arrow-icon {
     font-size: 0.95rem;
   }
 
+  /* Phone-sized labels: smaller, tighter tracking, and less air around the text. */
+  .button {
+    min-height: 42px;
+    gap: 7px;
+    padding: 0 15px;
+    font-size: 0.775rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  .button-small {
+    min-height: 34px;
+    padding-inline: 13px;
+    font-size: 0.71rem;
+  }
+
+  .button .arrow-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .text-link {
+    gap: 7px;
+    font-size: 0.745rem;
+    font-weight: 800;
+    letter-spacing: -0.022em;
+  }
+
+  .text-link-large {
+    font-size: 0.83rem;
+  }
+
   .button-row {
     display: flex;
     flex-wrap: nowrap;
@@ -2821,11 +2854,11 @@ a:hover .arrow-icon {
   .button-row .button {
     flex: 1 1 0;
     min-width: 0;
-    min-height: 44px;
+    min-height: 42px;
     padding: 0 10px;
     gap: 0;
-    font-size: 0.72rem;
-    letter-spacing: -0.02em;
+    font-size: 0.705rem;
+    letter-spacing: -0.03em;
   }
 
   .button-row .button .arrow-icon {
