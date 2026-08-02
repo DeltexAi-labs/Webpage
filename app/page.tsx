@@ -141,7 +141,7 @@ export default function Home() {
               Ideas shaped into <em>working</em> technology.
             </h1>
             <p className="hero-intro">
-              Deltech provides technology consultation, builds modern websites and applications, and creates
+              Deltech &amp; Big Technologies provides technology consultation, builds modern websites and applications, and creates
               practical AI systems for organizations ready to move from ambition to delivery.
             </p>
             <div className="button-row">
@@ -397,7 +397,7 @@ export default function Home() {
               <Image
                 className="team-photo-image"
                 src="/deltech-team-collaboration.png"
-                alt="Three product and software professionals collaborating around a laptop"
+                alt="Team Members"
                 fill
                 sizes="(max-width: 1020px) 100vw, 46vw"
               />

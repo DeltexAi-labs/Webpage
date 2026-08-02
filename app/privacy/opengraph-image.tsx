@@ -1,6 +1,6 @@
 import { ogContentType, ogSize, renderOgImage } from "@/lib/og";
 
-export const alt = "Deltech privacy policy";
+export const alt = "Deltech & Big Technologies privacy policy";
 export const size = ogSize;
 export const contentType = ogContentType;
 

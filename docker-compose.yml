@@ -1,0 +1,15 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://webpage-deltex1.vercel.app}
+        NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL:-dlandbigtechnologies@gmail.com}
+        NEXT_PUBLIC_CONTACT_PHONE: ${NEXT_PUBLIC_CONTACT_PHONE:-0793472960}
+    image: deltech-webpage:local
+    ports:
+      - "3000:3000"
+    # Server-side secrets stay out of the image and are read at runtime.
+    env_file:
+      - .env.local
+    restart: unless-stopped

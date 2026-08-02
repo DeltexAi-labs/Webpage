@@ -6,6 +6,7 @@ import type { FormEvent } from "react";
 
 import { ArrowIcon } from "@/components/arrow-icon";
 import { Toast, type ToastData } from "@/components/toast";
+import { siteConfig } from "@/lib/site";
 
 type SubmissionState = "idle" | "sending" | "success" | "error";
 
@@ -43,7 +44,7 @@ export function ContactForm() {
 
       form.reset();
       setSubmissionState("success");
-      const message = result.message || "Thanks—your project enquiry has been sent to Deltech.";
+      const message = result.message || `Thanks—your project enquiry has been sent to ${siteConfig.name}.`;
       setFeedback(message);
       showToast("success", "Enquiry sent", "A confirmation is on its way to your inbox. We reply within one working day.");
     } catch (error) {

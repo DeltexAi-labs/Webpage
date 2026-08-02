@@ -11,14 +11,14 @@ import { projectEmailHref, siteConfig } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Explore Deltech consulting, product design, website and application development, AI automation, and backend engineering services.",
+    "Explore Deltech & Big Technologies consulting, product design, website and application development, AI automation, and backend engineering services.",
   alternates: {
     canonical: "/services",
   },
   openGraph: {
-    title: "Technology consulting, software and AI services | Deltech",
+    title: `Technology consulting, software and AI services | ${siteConfig.name}`,
     description:
-      "Explore Deltech consulting, product design, website and application development, AI automation, and backend engineering services.",
+      "Explore Deltech & Big Technologies consulting, product design, website and application development, AI automation, and backend engineering services.",
     url: "/services",
     type: "website",
   },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  name: "Deltech technology services",
+  name: `${siteConfig.name} technology services`,
   itemListElement: services.map((service, index) => ({
     "@type": "ListItem",
     position: index + 1,

@@ -38,7 +38,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="shell footer-bottom">
-        <span>© {new Date().getFullYear()} Deltech. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</span>
         <nav className="footer-legal-links" aria-label="Legal">
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>

@@ -9,18 +9,18 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
-  applicationName: "Deltech",
+  applicationName: siteConfig.name,
   title: {
-    default: "Deltech | Consulting, software and AI",
-    template: "%s | Deltech",
+    default: `${siteConfig.name} | Consulting, software and AI`,
+    template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   alternates: {
     canonical: "/",
   },
   category: "technology",
-  creator: "Deltech",
-  publisher: "Deltech",
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
   keywords: [
     "technology consulting",
     "web development",
@@ -32,16 +32,16 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     // Images come from the opengraph-image files, so each route gets its own generated card.
-    title: "Deltech | Technology that moves the work forward",
+    title: `${siteConfig.name} | Technology that moves the work forward`,
     description: siteConfig.description,
     type: "website",
-    siteName: "Deltech",
+    siteName: siteConfig.name,
     url: "/",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Deltech | Consulting, software and AI",
+    title: `${siteConfig.name} | Consulting, software and AI`,
     description: siteConfig.description,
   },
   icons: {

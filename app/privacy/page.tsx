@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Privacy policy",
   description:
-    "What Deltech collects when you use this website or send a project enquiry, why we hold it, and how to have it removed.",
+    "What Deltech & Big Technologies collects when you use this website or send a project enquiry, why we hold it, and how to have it removed.",
   alternates: { canonical: "/privacy" },
 };
 

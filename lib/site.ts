@@ -2,7 +2,9 @@ const configuredSiteUrl =
   process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://webpage-deltex1.vercel.app";
 
 export const siteConfig = {
-  name: "Deltech",
+  name: "Deltech & Big Technologies",
+  // Used in running prose, where the full registered name reads heavily.
+  shortName: "Deltech",
   description:
     "Technology consulting, product design, web and app development, AI systems, and cloud engineering for teams ready to build with confidence.",
   siteUrl: configuredSiteUrl.replace(/\/$/, ""),
@@ -17,7 +19,7 @@ export function projectEmailHref(service = "a new project") {
   if (!siteConfig.contactEmail) return "#contact";
   const subject = encodeURIComponent(`Project enquiry: ${service}`);
   const body = encodeURIComponent(
-    "Hello Deltech,\n\nWhat we want to build:\n\nWho it is for:\n\nTarget timeline:\n\nBudget range (optional):\n",
+    "Hello Deltech & Big Technologies,\n\nWhat we want to build:\n\nWho it is for:\n\nTarget timeline:\n\nBudget range (optional):\n",
   );
   return `mailto:${siteConfig.contactEmail}?subject=${subject}&body=${body}`;
 }

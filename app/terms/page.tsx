@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Terms of service",
   description:
-    "The terms that govern use of the Deltech website and the ground rules for engagements that start from it.",
+    "The terms that govern use of the Deltech & Big Technologies website and the ground rules for engagements that start from it.",
   alternates: { canonical: "/terms" },
 };
 
@@ -67,7 +67,7 @@ const sections: LegalSection[] = [
           out of it until we have a confidentiality agreement in place.
         </p>
         <p>
-          We will not disclose the substance of your enquiry to anyone outside Deltech, and we are happy to
+          We will not disclose the substance of your enquiry to anyone outside Deltech &amp; Big Technologies, and we are happy to
           sign an NDA before a detailed discussion. How we store what you send is described in our{" "}
           <Link href="/privacy">privacy policy</Link>.
         </p>
@@ -80,7 +80,7 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          The Deltech name, brand, site design, and written content belong to us. The ideas you describe in an
+          The Deltech &amp; Big Technologies name, brand, site design, and written content belong to us. The ideas you describe in an
           enquiry remain yours — we claim no rights over them by receiving them.
         </p>
         <p>

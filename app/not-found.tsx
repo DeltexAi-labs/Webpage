@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Page not found",
-  description: "That address does not exist on the Deltech site. Here is the way back.",
+  description: "That address does not exist on the Deltech & Big Technologies site. Here is the way back.",
   robots: { index: false, follow: true },
 };
 

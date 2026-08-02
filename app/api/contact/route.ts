@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 import { clientReceiptEmail, internalEnquiryEmail, type EnquiryDetails } from "@/lib/emails";
+import { siteConfig } from "@/lib/site";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -101,7 +102,7 @@ export async function POST(request: NextRequest) {
 
   try {
     await transporter.sendMail({
-      from: `Deltech website <${smtpUser}>`,
+      from: `${siteConfig.name} website <${smtpUser}>`,
       to: recipient,
       replyTo: email,
       subject: internal.subject,
@@ -113,7 +114,7 @@ export async function POST(request: NextRequest) {
     const receipt = clientReceiptEmail(details);
     try {
       await transporter.sendMail({
-        from: `Deltech <${smtpUser}>`,
+        from: `${siteConfig.name} <${smtpUser}>`,
         to: email,
         replyTo: recipient,
         subject: receipt.subject,
@@ -124,7 +125,9 @@ export async function POST(request: NextRequest) {
       console.error("Contact confirmation delivery failed", error);
     }
 
-    return NextResponse.json({ message: "Thanks—your project enquiry has been sent to Deltech." });
+    return NextResponse.json({
+      message: `Thanks—your project enquiry has been sent to ${siteConfig.name}.`,
+    });
   } catch (error) {
     console.error("Contact email delivery failed", error);
     return NextResponse.json(
