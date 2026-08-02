@@ -2002,12 +2002,9 @@ a:hover .arrow-icon {
   grid-column: 1 / -1;
 }
 
+/* Spam trap: kept in the DOM for bots, but fully removed from layout, copy, and screen readers. */
 .form-honeypot {
-  position: fixed;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+  display: none;
 }
 
 .form-submit-row {

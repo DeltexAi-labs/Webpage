@@ -7,6 +7,8 @@ import { siteConfig } from "@/lib/site";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const MIN_MESSAGE_LENGTH = 20;
+
 const requestLog = new Map<string, { count: number; resetAt: number }>();
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT = 5;
@@ -71,11 +73,26 @@ export async function POST(request: NextRequest) {
   const service = cleanText(body.service, 100);
   const message = cleanMessage(body.message, 4000);
 
-  if (!name || !service || message.length < 20 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json(
-      { message: "Please provide your name, a valid email, a service, and a little more project detail." },
-      { status: 400 },
+  // Name the fields that actually failed, so the sender knows what to change.
+  const problems: string[] = [];
+  if (!name) problems.push("your name");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problems.push("a valid work email");
+  if (!service) problems.push("the service you need");
+  if (message.length < MIN_MESSAGE_LENGTH) {
+    problems.push(
+      message.length === 0
+        ? "a short description of the project"
+        : `at least ${MIN_MESSAGE_LENGTH} characters about the project (you wrote ${message.length})`,
     );
+  }
+
+  if (problems.length > 0) {
+    const list =
+      problems.length === 1
+        ? problems[0]
+        : `${problems.slice(0, -1).join(", ")} and ${problems[problems.length - 1]}`;
+
+    return NextResponse.json({ message: `Please add ${list}.` }, { status: 400 });
   }
 
   const smtp = readSmtpSettings();

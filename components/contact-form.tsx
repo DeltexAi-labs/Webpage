@@ -94,9 +94,10 @@ export function ContactForm() {
           </select>
         </label>
         <label className="form-message">
-          <span>Tell us about the project</span>
+          <span>Tell us about the project <i>at least 20 characters</i></span>
           <textarea
             maxLength={4000}
+            minLength={20}
             name="message"
             placeholder="What should this solve, who is it for, and when would you like to start?"
             required
