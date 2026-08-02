@@ -159,7 +159,8 @@ export function internalEnquiryEmail(details: EnquiryDetails) {
     </table>`;
 
   return {
-    subject: `New ${service} enquiry — ${name}`,
+    // Name first: inbox lists truncate the tail, and who wrote in matters more than the category.
+    subject: `${name} — ${service} enquiry`,
     html: emailShell({
       preheader: `${name} asked about ${service}.`,
       eyebrow: "New project enquiry",

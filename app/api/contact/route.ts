@@ -114,9 +114,10 @@ export async function POST(request: NextRequest) {
 
   try {
     await transporter.sendMail({
-      from: `${siteConfig.name} website <${smtpUser}>`,
+      // The enquirer's name is the display name, so the inbox list identifies who wrote in.
+      from: { name: `${name} (website enquiry)`, address: smtpUser },
       to: recipient,
-      replyTo: email,
+      replyTo: { name, address: email },
       subject: internal.subject,
       text: internal.text,
       html: internal.html,
@@ -126,8 +127,8 @@ export async function POST(request: NextRequest) {
     const receipt = clientReceiptEmail(details);
     try {
       await transporter.sendMail({
-        from: `${siteConfig.name} <${smtpUser}>`,
-        to: email,
+        from: { name: siteConfig.name, address: smtpUser },
+        to: { name, address: email },
         replyTo: recipient,
         subject: receipt.subject,
         text: receipt.text,
