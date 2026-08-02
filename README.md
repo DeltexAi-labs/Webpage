@@ -59,6 +59,22 @@ returns a direct-email fallback until SMTP credentials are configured.
 `NEXT_PUBLIC_SITE_URL` must be the final HTTPS production origin before launch. It is used for canonical URLs,
 the XML sitemap, robots host declaration, social metadata, and structured-data URLs.
 
+## Flood protection and traffic alerts
+
+`proxy.ts` runs on every request and applies a per-IP sliding window (`lib/shield.ts`). An address that
+exceeds `SHIELD_MAX_REQUESTS` inside `SHIELD_WINDOW_MS` receives `429` with a `Retry-After` header for
+`SHIELD_BLOCK_MS`. When `SHIELD_ATTACK_OFFENDERS` addresses are blocked at once, the proxy calls
+`/api/security/alert`, which emails the source IPs, hit counts, targeted paths, and user agents.
+`SHIELD_ALERT_COOLDOWN_MS` keeps an attack from flooding the inbox. Alerts are only sent when
+`SECURITY_ALERT_SECRET` is set — the endpoint returns `404` to anyone without that header.
+
+**This is application-layer protection, not DDoS protection.** It stops abuse that reaches the app —
+scripted scraping, form spam, single-source floods — and tells you who is doing it. A volumetric attack
+saturates the network before this code runs, and the counters live in the memory of one instance, so they
+reset on cold starts and are not shared across serverless instances. For real protection, put the domain
+behind a network-level WAF (Cloudflare, or Vercel's Attack Challenge Mode / firewall rules) and treat these
+emails as evidence for the rules you set there.
+
 ## Structure
 
 - `app/page.tsx` — general company landing page
@@ -70,6 +86,10 @@ the XML sitemap, robots host declaration, social metadata, and structured-data U
 - `lib/site.ts` — deployment and contact configuration
 - `app/globals.css` — responsive design system with reduced-motion support
 - `app/api/contact/route.ts` — validated, rate-limited Nodemailer endpoint
+- `proxy.ts` and `lib/shield.ts` — per-IP flood protection and security headers
+- `app/api/security/alert/route.ts` — secret-guarded endpoint that emails traffic alerts
+- `lib/mailer.ts` — shared SMTP transport used by the contact and alert endpoints
+- `Dockerfile`, `docker-compose.yml`, `.github/workflows/` — container build and CI/CD
 - `app/sitemap.ts` and `app/robots.ts` — search-engine discovery and crawler rules
 - `components/json-ld.tsx` — safe JSON-LD serialization for Organization and Service data
 - `public/deltech-logo.png` — web-ready logo prepared from the supplied Deltech artwork

@@ -183,6 +183,104 @@ export function internalEnquiryEmail(details: EnquiryDetails) {
   };
 }
 
+export type SecurityAlertDetails = {
+  host: string;
+  detectedAt: Date;
+  windowMs: number;
+  totalRequests: number;
+  offenders: {
+    ip: string;
+    requests: number;
+    paths: string[];
+    userAgent: string;
+    firstSeen: number;
+    lastSeen: number;
+  }[];
+};
+
+export function securityAlertEmail(details: SecurityAlertDetails) {
+  const { host, detectedAt, windowMs, totalRequests, offenders } = details;
+  const seconds = Math.round(windowMs / 1000);
+
+  const rows = offenders
+    .map(
+      (offender) => `
+      <tr>
+        <td style="padding:12px 10px 12px 0;border-bottom:1px solid ${line};vertical-align:top;">
+          <span style="color:${ink};font-family:'SFMono-Regular',Consolas,monospace;font-size:14px;font-weight:700;">${escapeHtml(offender.ip)}</span>
+        </td>
+        <td style="padding:12px 10px;border-bottom:1px solid ${line};vertical-align:top;text-align:right;">
+          <span style="color:#b42318;font-size:14px;font-weight:700;">${offender.requests}</span>
+        </td>
+        <td style="padding:12px 0 12px 10px;border-bottom:1px solid ${line};vertical-align:top;">
+          <span style="color:#5b6f7c;font-size:12.5px;line-height:1.5;">${escapeHtml(offender.paths.join(", ") || "—")}</span><br />
+          <span style="color:#8d9ea9;font-size:11.5px;">${escapeHtml(offender.userAgent.slice(0, 90) || "no user agent")}</span>
+        </td>
+      </tr>`,
+    )
+    .join("");
+
+  const body = `
+    <p style="margin:0 0 22px;color:#243746;font-size:15px;line-height:1.7;">
+      <strong>${offenders.length} addresses</strong> were rate-limited on <strong>${escapeHtml(host)}</strong> at
+      the same time, together making <strong>${totalRequests} requests</strong> inside a ${seconds}-second window.
+      They are blocked automatically; this message is for your awareness.
+    </p>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+        <td style="padding:0 10px 10px 0;border-bottom:2px solid ${ink};">
+          <span style="color:${muted};font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;">Source IP</span>
+        </td>
+        <td style="padding:0 10px 10px;border-bottom:2px solid ${ink};text-align:right;">
+          <span style="color:${muted};font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;">Hits</span>
+        </td>
+        <td style="padding:0 0 10px 10px;border-bottom:2px solid ${ink};">
+          <span style="color:${muted};font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;">Targets</span>
+        </td>
+      </tr>
+      ${rows}
+    </table>
+
+    <div style="margin:26px 0 0;padding:22px 24px;background:#fff7f6;border:1px solid #f3d6d2;border-left:3px solid #b42318;border-radius:12px;">
+      <span style="display:block;margin-bottom:10px;color:#8a2b22;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;">If this keeps happening</span>
+      <p style="margin:0;color:#5b3a36;font-size:13.5px;line-height:1.7;">
+        The app blocks these addresses by itself, but application-level blocking cannot absorb a large
+        volumetric attack. Put the domain behind a network-level WAF, block the listed ranges there, and
+        confirm the origin only accepts traffic through it.
+      </p>
+    </div>
+
+    <p style="margin:24px 0 0;color:#8d9ea9;font-size:12px;line-height:1.6;">
+      Detected ${escapeHtml(formatDate(detectedAt))} UTC. Further alerts are suppressed briefly so an
+      attack cannot flood this inbox.
+    </p>`;
+
+  return {
+    subject: `Traffic alert — ${offenders.length} addresses blocked on ${host}`,
+    html: emailShell({
+      preheader: `${offenders.length} addresses blocked after ${totalRequests} requests in ${seconds}s.`,
+      eyebrow: "Automated traffic alert",
+      heading: "Unusual traffic was blocked.",
+      intro: "Your site rate-limited a burst of requests. The sources are listed below.",
+      body,
+      footer: `${siteConfig.name} · automated monitoring · ${escapeHtml(siteConfig.siteUrl)}`,
+    }),
+    text: [
+      `Unusual traffic blocked on ${host}`,
+      `Detected: ${formatDate(detectedAt)} UTC`,
+      `${offenders.length} addresses, ${totalRequests} requests in ${seconds}s`,
+      "",
+      ...offenders.map(
+        (offender) =>
+          `${offender.ip} — ${offender.requests} hits — ${offender.paths.join(", ")} — ${offender.userAgent.slice(0, 90)}`,
+      ),
+      "",
+      "These addresses are blocked automatically. For sustained attacks, use a network-level WAF.",
+    ].join("\n"),
+  };
+}
+
 export function clientReceiptEmail(details: EnquiryDetails) {
   const { name, service, message } = details;
   const firstName = name.split(" ")[0] || name;

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 
 import { clientReceiptEmail, internalEnquiryEmail, type EnquiryDetails } from "@/lib/emails";
+import { createTransport, readSmtpSettings } from "@/lib/mailer";
 import { siteConfig } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -78,24 +78,19 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const smtpUser = process.env.SMTP_USER?.trim();
-  const smtpPass = process.env.SMTP_PASS?.replace(/\s/g, "");
-  const recipient = process.env.CONTACT_TO_EMAIL?.trim() || siteConfig.contactEmail;
+  const smtp = readSmtpSettings();
 
-  if (!smtpUser || !smtpPass) {
+  if (!smtp) {
     return NextResponse.json(
-      { message: `Online sending is being configured. Please email ${recipient} directly for now.` },
+      {
+        message: `Online sending is being configured. Please email ${siteConfig.contactEmail} directly for now.`,
+      },
       { status: 503 },
     );
   }
 
-  const port = Number(process.env.SMTP_PORT || 465);
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST?.trim() || "smtp.gmail.com",
-    port,
-    secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === "true" : port === 465,
-    auth: { user: smtpUser, pass: smtpPass },
-  });
+  const { user: smtpUser, recipient } = smtp;
+  const transporter = createTransport(smtp);
 
   const details: EnquiryDetails = { name, email, phone, service, message, submittedAt: new Date() };
   const internal = internalEnquiryEmail(details);
