@@ -1810,12 +1810,102 @@ a:hover .arrow-icon {
 }
 
 .contact-form {
+  position: relative;
   padding: 40px;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 20px;
   background: var(--white);
   box-shadow: 0 28px 75px rgba(0, 0, 0, 0.24);
   color: var(--ink);
+}
+
+/* Indeterminate bar across the top of the card while the request is in flight. */
+.form-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  background: rgba(8, 104, 243, 0.12);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.contact-form[data-sending] .form-progress {
+  opacity: 1;
+}
+
+.form-progress::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--brand-blue), transparent);
+  content: "";
+  transform: translateX(-100%);
+}
+
+.contact-form[data-sending] .form-progress::before {
+  animation: form-progress-slide 1.15s ease-in-out infinite;
+}
+
+@keyframes form-progress-slide {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(350%);
+  }
+}
+
+.spinner {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-content: center;
+}
+
+.spinner svg {
+  animation: spinner-rotate 1.4s linear infinite;
+}
+
+.spinner-track {
+  stroke: currentColor;
+  opacity: 0.28;
+}
+
+.spinner-arc {
+  stroke: currentColor;
+  stroke-dasharray: 60 60;
+  stroke-dashoffset: 45;
+  transform-origin: center;
+  animation: spinner-dash 1.4s ease-in-out infinite;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner-dash {
+  0% {
+    stroke-dasharray: 6 54;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 42 18;
+    stroke-dashoffset: -12;
+  }
+
+  100% {
+    stroke-dasharray: 6 54;
+    stroke-dashoffset: -58;
+  }
 }
 
 .form-heading {
@@ -1927,10 +2017,16 @@ a:hover .arrow-icon {
 }
 
 .button-contact {
+  min-height: 46px;
+  padding: 0 22px;
+  gap: 9px;
   border: 0;
   background: var(--brand-blue);
   color: var(--white);
   cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 750;
+  letter-spacing: -0.015em;
 }
 
 .button-contact:hover {
@@ -1938,9 +2034,14 @@ a:hover .arrow-icon {
 }
 
 .button-contact:disabled {
-  cursor: wait;
-  opacity: 0.7;
+  cursor: progress;
+  opacity: 0.82;
   transform: none;
+}
+
+/* Hold the width steady between the two labels so the button does not jump on submit. */
+.button-contact[aria-busy="true"] {
+  min-width: 172px;
 }
 
 .form-privacy {
@@ -3293,6 +3394,20 @@ a:hover .arrow-icon {
   .toast,
   .mobile-menu-sheet {
     animation: none;
+  }
+
+  /* The spinner still turns — it is the only signal that the request is running — just slower. */
+  .spinner svg {
+    animation-duration: 2.4s;
+  }
+
+  .spinner-arc,
+  .contact-form[data-sending] .form-progress::before {
+    animation: none;
+  }
+
+  .spinner-arc {
+    stroke-dasharray: 30 30;
   }
 
   .toast-progress {

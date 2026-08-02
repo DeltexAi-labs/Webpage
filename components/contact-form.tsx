@@ -5,6 +5,7 @@ import { useCallback, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 import { ArrowIcon } from "@/components/arrow-icon";
+import { Spinner } from "@/components/spinner";
 import { Toast, type ToastData } from "@/components/toast";
 import { siteConfig } from "@/lib/site";
 
@@ -15,6 +16,7 @@ export function ContactForm() {
   const [feedback, setFeedback] = useState("");
   const [toast, setToast] = useState<ToastData | null>(null);
   const toastId = useRef(0);
+  const isSending = submissionState === "sending";
 
   const dismissToast = useCallback(() => setToast(null), []);
 
@@ -58,7 +60,8 @@ export function ContactForm() {
   return (
     <>
     <Toast toast={toast} onDismiss={dismissToast} />
-    <form className="contact-form" onSubmit={submitForm}>
+    <form className="contact-form" onSubmit={submitForm} data-sending={isSending || undefined}>
+      <span className="form-progress" aria-hidden="true" />
       <div className="form-heading">
         <span>Project enquiry</span>
         <p>Tell us enough to identify the right next step.</p>
@@ -108,9 +111,23 @@ export function ContactForm() {
       </label>
 
       <div className="form-submit-row">
-        <button className="button button-contact" disabled={submissionState === "sending"} type="submit">
-          {submissionState === "sending" ? "Sending…" : "Send project enquiry"}
-          {submissionState === "sending" ? null : <ArrowIcon />}
+        <button
+          className="button button-contact"
+          disabled={isSending}
+          type="submit"
+          aria-busy={isSending}
+        >
+          {isSending ? (
+            <>
+              <Spinner label="Sending your enquiry" />
+              Sending…
+            </>
+          ) : (
+            <>
+              Send project enquiry
+              <ArrowIcon />
+            </>
+          )}
         </button>
         <p className="form-privacy">
           Your details are used only to respond to this enquiry. See our{" "}
