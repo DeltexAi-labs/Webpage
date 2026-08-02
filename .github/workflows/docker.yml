@@ -65,10 +65,15 @@ jobs:
 
       - name: Smoke test the built image
         if: github.event_name != 'pull_request'
+        # Take the tag straight from the metadata step: Docker rejects uppercase repository names,
+        # and github.repository preserves the owner's capitalisation.
+        env:
+          IMAGE_REF: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
         run: |
+          echo "Testing $IMAGE_REF"
           docker run -d --name webpage -p 3000:3000 \
             -e SMTP_HOST=smtp.gmail.com -e SMTP_PORT=465 -e SMTP_SECURE=true \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-$(git rev-parse --short HEAD)
+            "$IMAGE_REF"
           for i in $(seq 1 30); do
             if curl -fsS http://localhost:3000/ > /dev/null; then
               echo "Container served the homepage."
