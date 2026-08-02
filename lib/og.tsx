@@ -72,16 +72,24 @@ export function renderOgImage({ eyebrow, title, description, tags = defaultTags 
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                width: 88,
-                height: 88,
+                width: 96,
+                height: 96,
                 overflow: "hidden",
+                // Round crop: the artwork is a circular emblem on a black field.
                 border: "1px solid rgba(255,255,255,0.16)",
-                borderRadius: 24,
-                background: "rgba(255,255,255,0.06)",
+                borderRadius: 96,
+                background: "#05080d",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders raw img only. */}
-              <img src={logoDataUri} width={88} height={88} alt="" style={{ objectFit: "cover" }} />
+              <img
+                src={logoDataUri}
+                width={96}
+                height={96}
+                alt=""
+                // Satori does not clip children to the parent radius, so the image rounds itself.
+                style={{ objectFit: "cover", borderRadius: 96 }}
+              />
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", fontSize: 34, fontWeight: 700, letterSpacing: -1.2 }}>

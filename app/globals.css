@@ -103,13 +103,15 @@ select {
 .brand-symbol {
   position: relative;
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   place-items: center;
   overflow: hidden;
-  border-radius: 11px;
-  background: var(--brand-blue);
-  box-shadow: 0 6px 18px rgba(8, 104, 243, 0.24);
+  /* The mark is a circular emblem on black, so a round crop hides the square corners. */
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  background: #05080d;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
 .brand-symbol-image {

@@ -1,4 +1,3 @@
-// Prefer the explicit setting; otherwise use the domain Vercel reports, so a missing variable does
 // not silently publish canonical URLs pointing at a different deployment.
 const vercelProductionUrl = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL?.trim();
 
