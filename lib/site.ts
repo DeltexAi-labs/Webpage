@@ -8,7 +8,7 @@ export const siteConfig = {
   description:
     "Technology consulting, product design, web and app development, AI systems, and cloud engineering for teams ready to build with confidence.",
   siteUrl: configuredSiteUrl.replace(/\/$/, ""),
-  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "deltex@gmail.com",
+  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "dlandbigtechnologies@gmail.com",
   contactPhone: process.env.NEXT_PUBLIC_CONTACT_PHONE?.trim() || "0793472960",
   bookingUrl: process.env.NEXT_PUBLIC_BOOKING_URL?.trim() || "",
 };

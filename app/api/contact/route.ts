@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
 
   const smtpUser = process.env.SMTP_USER?.trim();
   const smtpPass = process.env.SMTP_PASS?.replace(/\s/g, "");
-  const recipient = process.env.CONTACT_TO_EMAIL?.trim() || "deltex@gmail.com";
+  const recipient = process.env.CONTACT_TO_EMAIL?.trim() || siteConfig.contactEmail;
 
   if (!smtpUser || !smtpPass) {
     return NextResponse.json(
