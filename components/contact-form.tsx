@@ -70,7 +70,7 @@ export function ContactForm() {
       <div className="form-grid">
         <label>
           <span>Your name</span>
-          <input autoComplete="name" maxLength={80} name="name" placeholder="Jane Doe" required />
+          <input autoComplete="name" maxLength={80} name="name" placeholder="Your full name" required />
         </label>
         <label>
           <span>Work email</span>
