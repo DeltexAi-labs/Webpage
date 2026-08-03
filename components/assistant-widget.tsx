@@ -5,7 +5,6 @@ import type { FormEvent } from "react";
 
 import { ArrowIcon } from "@/components/arrow-icon";
 import { RichText } from "@/components/rich-text";
-import { Spinner } from "@/components/spinner";
 
 type Turn = { role: "user" | "assistant"; content: string };
 
@@ -35,10 +34,23 @@ export function AssistantWidget() {
   const logRef = useRef<HTMLDivElement>(null);
   const pendingRef = useRef("");
   const frameRef = useRef<number | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  // Auto-scroll only while the reader is already at the bottom, so scrolling back to re-read an
+  // earlier answer is not yanked away by the incoming stream.
+  const stickToBottomRef = useRef(true);
 
   useEffect(() => {
-    logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
+    const log = logRef.current;
+    if (!log || !stickToBottomRef.current) return;
+    log.scrollTop = log.scrollHeight;
   }, [turns, streamed, waiting]);
+
+  function handleScroll() {
+    const log = logRef.current;
+    if (!log) return;
+    const distanceFromBottom = log.scrollHeight - log.scrollTop - log.clientHeight;
+    stickToBottomRef.current = distanceFromBottom < 40;
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -56,17 +68,20 @@ export function AssistantWidget() {
   }, []);
 
   // Network chunks arrive in bursts; draining a buffer on each frame turns them into even typing.
+  // The rate scales with the backlog so a fast model never leaves the text trailing behind.
   function startReveal() {
     if (frameRef.current !== null) return;
 
     const tick = () => {
-      if (pendingRef.current.length === 0) {
+      const pending = pendingRef.current;
+      if (pending.length === 0) {
         frameRef.current = null;
         return;
       }
 
-      const slice = pendingRef.current.slice(0, REVEAL_RATE);
-      pendingRef.current = pendingRef.current.slice(slice.length);
+      const rate = Math.max(REVEAL_RATE, Math.ceil(pending.length / 14));
+      const slice = pending.slice(0, rate);
+      pendingRef.current = pending.slice(slice.length);
       setStreamed((previous) => previous + slice);
       frameRef.current = requestAnimationFrame(tick);
     };
@@ -88,7 +103,10 @@ export function AssistantWidget() {
     const trimmed = question.trim();
     if (!trimmed || busy) return;
 
-    const history = turns.slice(-6);
+    const history = turns.slice(-12);
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setTurns((previous) => [...previous, { role: "user", content: trimmed }]);
     setInput("");
     setError("");
@@ -96,12 +114,16 @@ export function AssistantWidget() {
     setWaiting(true);
     setStreamed("");
     pendingRef.current = "";
+    stickToBottomRef.current = true;
+
+    let full = "";
 
     try {
       const response = await fetch("/api/assistant/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: trimmed, history }),
+        signal: controller.signal,
       });
 
       if (!response.ok || !response.body) {
@@ -111,7 +133,6 @@ export function AssistantWidget() {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let full = "";
 
       for (;;) {
         const { done, value } = await reader.read();
@@ -126,18 +147,32 @@ export function AssistantWidget() {
         startReveal();
       }
 
-      // Show anything still queued immediately, then commit the finished turn.
+      // Commit in one update: the streaming bubble is replaced by the finished turn in the same
+      // render, so the text never disappears for a frame or shifts position.
       flushReveal();
       setStreamed("");
       setTurns((previous) => [...previous, { role: "assistant", content: full.trim() }]);
     } catch (caught) {
       flushReveal();
       setStreamed("");
-      setError(caught instanceof Error ? caught.message : "Something went wrong.");
+
+      // A deliberate stop keeps whatever was generated; a real failure shows the error instead.
+      if (caught instanceof DOMException && caught.name === "AbortError") {
+        if (full.trim()) {
+          setTurns((previous) => [...previous, { role: "assistant", content: full.trim() }]);
+        }
+      } else {
+        setError(caught instanceof Error ? caught.message : "Something went wrong.");
+      }
     } finally {
+      abortRef.current = null;
       setWaiting(false);
       setBusy(false);
     }
+  }
+
+  function stop() {
+    abortRef.current?.abort();
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -163,7 +198,7 @@ export function AssistantWidget() {
             </button>
           </header>
 
-          <div className="assistant-log" ref={logRef}>
+          <div className="assistant-log" ref={logRef} onScroll={handleScroll}>
             <p className="assistant-greeting">{GREETING}</p>
 
             {turns.map((turn, index) => (
@@ -172,16 +207,21 @@ export function AssistantWidget() {
               </div>
             ))}
 
-            {streamed ? (
-              <div className="assistant-turn assistant-assistant" aria-live="polite">
-                <RichText text={streamed} />
-                <span className="assistant-caret" aria-hidden="true" />
-              </div>
-            ) : null}
-
-            {waiting ? (
-              <div className="assistant-turn assistant-assistant assistant-pending">
-                <Spinner size={14} label="Thinking" /> Thinking…
+            {/* One bubble for both states: thinking becomes text in place, with no second element
+                appearing or disappearing, so nothing jumps between the two phases. */}
+            {busy || streamed ? (
+              <div className="assistant-turn assistant-assistant" aria-live="polite" aria-busy={waiting}>
+                {streamed ? (
+                  <>
+                    <RichText text={streamed} />
+                    <span className="assistant-caret" aria-hidden="true" />
+                  </>
+                ) : (
+                  <p className="assistant-thinking">
+                    <span aria-hidden="true">Thinking</span>
+                    <span className="assistant-sr">Cipher is thinking</span>
+                  </p>
+                )}
               </div>
             ) : null}
 
@@ -215,9 +255,17 @@ export function AssistantWidget() {
               disabled={busy}
               aria-label="Your question"
             />
-            <button type="submit" className="assistant-send" disabled={busy || !input.trim()} aria-label="Send question">
-              <ArrowIcon />
-            </button>
+            {busy ? (
+              <button type="button" className="assistant-send assistant-stop" onClick={stop} aria-label="Stop generating">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <rect x="4.5" y="4.5" width="7" height="7" rx="1.6" fill="currentColor" />
+                </svg>
+              </button>
+            ) : (
+              <button type="submit" className="assistant-send" disabled={!input.trim()} aria-label="Send question">
+                <ArrowIcon />
+              </button>
+            )}
           </form>
 
           <p className="assistant-footnote">

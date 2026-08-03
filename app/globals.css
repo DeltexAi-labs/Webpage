@@ -2296,11 +2296,57 @@ a:hover .arrow-icon {
   color: var(--white);
 }
 
-.assistant-pending {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  color: #e6eef3;
+/* Thinking state: a highlight sweeps left to right across the word, the way a shimmer skeleton
+   does, so the wait reads as activity rather than a frozen label. */
+.assistant-thinking {
+  margin: 0;
+  font-weight: 650;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.42) 20%,
+    var(--mint) 42%,
+    rgba(255, 255, 255, 0.95) 52%,
+    rgba(255, 255, 255, 0.42) 74%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: assistant-shimmer 1.6s linear infinite;
+}
+
+.assistant-thinking::after {
+  content: "…";
+}
+
+.assistant-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes assistant-shimmer {
+  from {
+    background-position: 140% 0;
+  }
+
+  to {
+    background-position: -40% 0;
+  }
+}
+
+.assistant-stop {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+  color: var(--white) !important;
+}
+
+.assistant-stop:hover {
+  border-color: #ff9d94 !important;
+  color: #ff9d94 !important;
 }
 
 .assistant-error {
@@ -3809,6 +3855,14 @@ a:hover .arrow-icon {
   .assistant-panel,
   .assistant-caret {
     animation: none;
+  }
+
+  /* The shimmer stops moving but must stay legible, so the text colour is restored. */
+  .assistant-thinking {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: #e6eef3;
   }
 
   /* The spinner still turns — it is the only signal that the request is running — just slower. */
