@@ -138,9 +138,10 @@ export function retrieveContext(question: string, recentTurns: string[] = [], li
     picked.unshift(
       [
         "THE PEOPLE",
-        `Founders: ${data.people.founders.map((person) => `${person.name} (${person.role})`).join(" and ")}.`,
+        // Roles are distinct and must be stated as written: one founder, one co-founder.
+        ...data.people.founders.map((person) => `${person.role}: ${person.name}.`),
         data.people.teamNote,
-        "Do not add titles, biographies, or histories that are not written here.",
+        "State each person's role exactly as written above. Do not add titles, biographies, or histories that are not here.",
       ].join("\n"),
     );
   }
