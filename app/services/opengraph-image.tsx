@@ -8,8 +8,6 @@ export default function OpengraphImage() {
   return renderOgImage({
     eyebrow: "Services",
     title: "Organized around outcomes.",
-    description:
-      "Consulting, product design, engineering, AI, and cloud. Engage one specialty or the full mix, from idea to operation.",
     tags: ["Consulting", "Design", "Engineering", "AI", "Cloud"],
   });
 }

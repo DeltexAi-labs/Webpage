@@ -14,15 +14,16 @@ export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
 
 type OgImageOptions = {
+  /** Small mint line under the wordmark, e.g. the section this page belongs to. */
   eyebrow: string;
+  /** One short line beneath that. The card is the logo, so this stays brief. */
   title: string;
-  description: string;
   tags?: string[];
 };
 
 const defaultTags = ["Consulting", "Software", "AI", "Cloud"];
 
-export function renderOgImage({ eyebrow, title, description, tags = defaultTags }: OgImageOptions) {
+export function renderOgImage({ eyebrow, title, tags = defaultTags }: OgImageOptions) {
   const host = siteConfig.siteUrl.replace(/^https?:\/\//, "");
   // Better to show nothing than "localhost:3000" if the site URL was never configured.
   const showHost = !/^(localhost|127\.0\.0\.1|0\.0\.0\.0)(:|$)/.test(host);
