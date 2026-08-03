@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 import { ArrowIcon } from "@/components/arrow-icon";
+import { RichText } from "@/components/rich-text";
 import { Spinner } from "@/components/spinner";
 
 type Turn = { role: "user" | "assistant"; content: string };
@@ -15,10 +16,13 @@ const SUGGESTIONS = [
 ];
 
 const GREETING =
-  "Ask me about our services, timelines, or price ranges. For a firm quote, the contact form is the fastest route.";
+  "I'm Cipher. Ask me about our services, timelines, or how we work. For a firm quote, the contact form is the fastest route.";
 
 /** Characters revealed per animation frame. Fast enough to keep up, slow enough to read as typing. */
 const REVEAL_RATE = 3;
+
+/** Matches the server limit, so a long brief is never silently cut in the browser. */
+const MAX_INPUT_LENGTH = 4000;
 
 export function AssistantWidget() {
   const [open, setOpen] = useState(false);
@@ -145,13 +149,13 @@ export function AssistantWidget() {
   return (
     <div className="assistant" data-open={open || undefined}>
       {open ? (
-        <section className="assistant-panel" aria-label="Ask Deltech & Big Technologies">
+        <section className="assistant-panel" aria-label="Chat with Cipher">
           <header className="assistant-head">
             <div>
               <p className="assistant-eyebrow">
-                <span className="status-dot" /> Assistant
+                <span className="status-dot" /> Online
               </p>
-              <strong>Ask about services and pricing</strong>
+              <strong>Chat with Cipher</strong>
             </div>
             <button type="button" onClick={() => setOpen(false)} aria-label="Close assistant">
               <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -164,22 +168,22 @@ export function AssistantWidget() {
             <p className="assistant-greeting">{GREETING}</p>
 
             {turns.map((turn, index) => (
-              <p className={`assistant-turn assistant-${turn.role}`} key={`${turn.role}-${index}`}>
-                {turn.content}
-              </p>
+              <div className={`assistant-turn assistant-${turn.role}`} key={`${turn.role}-${index}`}>
+                {turn.role === "assistant" ? <RichText text={turn.content} /> : <p>{turn.content}</p>}
+              </div>
             ))}
 
             {streamed ? (
-              <p className="assistant-turn assistant-assistant" aria-live="polite">
-                {streamed}
+              <div className="assistant-turn assistant-assistant" aria-live="polite">
+                <RichText text={streamed} />
                 <span className="assistant-caret" aria-hidden="true" />
-              </p>
+              </div>
             ) : null}
 
             {waiting ? (
-              <p className="assistant-turn assistant-assistant assistant-pending">
+              <div className="assistant-turn assistant-assistant assistant-pending">
                 <Spinner size={14} label="Thinking" /> Thinking…
-              </p>
+              </div>
             ) : null}
 
             {error ? <p className="assistant-error">{error}</p> : null}
@@ -196,11 +200,19 @@ export function AssistantWidget() {
           </div>
 
           <form className="assistant-input" onSubmit={handleSubmit}>
-            <input
+            <textarea
               value={input}
               onChange={(event) => setInput(event.target.value)}
-              placeholder="Ask a question"
-              maxLength={700}
+              onKeyDown={(event) => {
+                // Enter sends, Shift+Enter starts a new line — a long brief stays one message.
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  void ask(input);
+                }
+              }}
+              placeholder="Ask a question — Shift+Enter for a new line"
+              maxLength={MAX_INPUT_LENGTH}
+              rows={1}
               disabled={busy}
               aria-label="Your question"
             />

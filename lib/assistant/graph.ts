@@ -2,12 +2,19 @@ import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages
 import { ChatGroq } from "@langchain/groq";
 import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 
+import { fenceUntrusted, inspectForInjection, scrubChunk, INJECTION_REFUSAL } from "@/lib/assistant/guard";
 import { retrieveContext, systemPrompt } from "@/lib/assistant/knowledge";
 
 export type ChatTurn = { role: "user" | "assistant"; content: string };
 
 /** Hard ceiling on the reply. The prompt also asks for brevity; this is the guarantee. */
 export const MAX_ANSWER_TOKENS = 1000;
+
+/** Turns kept verbatim. Enough for a multi-step conversation without unbounded prompt growth. */
+export const HISTORY_TURNS = 12;
+
+/** Characters of history sent to the model, oldest dropped first. */
+const HISTORY_CHAR_BUDGET = 6000;
 
 const AssistantState = Annotation.Root({
   question: Annotation<string>,
@@ -19,7 +26,7 @@ const AssistantState = Annotation.Root({
     reducer: (_current, incoming) => incoming,
     default: () => "",
   }),
-  answer: Annotation<string>({
+  refusal: Annotation<string>({
     reducer: (_current, incoming) => incoming,
     default: () => "",
   }),
@@ -37,33 +44,60 @@ function createModel() {
   });
 }
 
-// Node 1: pull the reference material this question needs.
-function retrieve(state: typeof AssistantState.State) {
-  return { context: retrieveContext(state.question) };
+/** Keeps the most recent turns that fit the budget, never splitting a turn in half. */
+function trimHistory(history: ChatTurn[]) {
+  const kept: ChatTurn[] = [];
+  let used = 0;
+
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    if (used + turn.content.length > HISTORY_CHAR_BUDGET) break;
+    used += turn.content.length;
+    kept.unshift(turn);
+  }
+
+  return kept.slice(-HISTORY_TURNS);
 }
 
-// Node 2: answer strictly from that material.
+// Node 1: screen the question before anything else looks at it.
+function guard(state: typeof AssistantState.State) {
+  const report = inspectForInjection(state.question);
+  return report.suspicious ? { refusal: INJECTION_REFUSAL } : { refusal: "" };
+}
+
+// Node 2: pull reference material, using recent turns to resolve follow-ups.
+function retrieve(state: typeof AssistantState.State) {
+  const recent = trimHistory(state.history).map((turn) => turn.content);
+  return { context: retrieveContext(state.question, recent) };
+}
+
+// Node 3: answer strictly from that material.
 async function respond(state: typeof AssistantState.State) {
   const model = createModel();
+  const history = trimHistory(state.history);
 
   const messages = [
-    new SystemMessage(`${systemPrompt()}\n\nREFERENCE MATERIAL\n${state.context}`),
-    ...state.history.slice(-6).map((turn) =>
+    new SystemMessage(`${systemPrompt()}\n\n${fenceUntrusted(state.context)}`),
+    ...history.map((turn) =>
       turn.role === "user" ? new HumanMessage(turn.content) : new AIMessage(turn.content),
     ),
     new HumanMessage(state.question),
   ];
 
-  const reply = await model.invoke(messages);
-  const answer = typeof reply.content === "string" ? reply.content : JSON.stringify(reply.content);
+  await model.invoke(messages);
+  return {};
+}
 
-  return { answer: answer.trim() };
+function afterGuard(state: typeof AssistantState.State) {
+  return state.refusal ? END : "retrieve";
 }
 
 const workflow = new StateGraph(AssistantState)
+  .addNode("guard", guard)
   .addNode("retrieve", retrieve)
   .addNode("respond", respond)
-  .addEdge(START, "retrieve")
+  .addEdge(START, "guard")
+  .addConditionalEdges("guard", afterGuard, { [END]: END, retrieve: "retrieve" })
   .addEdge("retrieve", "respond")
   .addEdge("respond", END);
 
@@ -75,7 +109,13 @@ const app = workflow.compile();
  * instead of waiting for the whole reply.
  */
 export async function* streamAnswer(question: string, history: ChatTurn[] = []) {
-  const events = app.streamEvents({ question, history }, { version: "v2" });
+  const screened = inspectForInjection(question);
+  if (screened.suspicious) {
+    yield INJECTION_REFUSAL;
+    return;
+  }
+
+  const events = app.streamEvents({ question: screened.clean, history }, { version: "v2" });
 
   for await (const event of events) {
     if (event.event !== "on_chat_model_stream") continue;
@@ -90,6 +130,8 @@ export async function* streamAnswer(question: string, history: ChatTurn[] = []) 
               .join("")
           : "";
 
-    if (text) yield text;
+    // Cheap per-chunk scrub. Must not trim: the spaces inside a token are the spaces between words.
+    const safe = scrubChunk(text);
+    if (safe) yield safe;
   }
 }

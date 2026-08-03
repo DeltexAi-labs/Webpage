@@ -4,115 +4,543 @@
     "currency": "KES",
     "currencySymbol": "KES",
     "lastReviewed": "2026-08-02",
-    "pricingBasis": "Indicative ranges for scoping conversations only. Every engagement is quoted in writing after a discovery call.",
+    "pricingBasis": "Indicative ranges benchmarked against the Kenyan market. Scoping guidance only — every engagement is quoted in writing after a discovery call.",
     "overallRange": {
-      "min": 30000,
-      "max": 2800000,
-      "aboveMaxNote": "Programmes larger than KES 2.8M are quoted per phase rather than as a single figure."
+      "min": 10000,
+      "max": 1500000,
+      "aboveMaxNote": "Programmes larger than KES 1.5M are quoted per phase rather than as a single figure."
     }
   },
-
   "services": [
     {
       "id": "technology-consulting",
       "name": "Technology consulting",
       "summary": "Turning an unclear technology problem into a roadmap the team can execute.",
       "priceBands": [
-        { "tier": "Advisory session", "min": 30000, "max": 90000, "unit": "engagement", "includes": "A half-day working session, written findings, and a recommended next step." },
-        { "tier": "Discovery and roadmap", "min": 200000, "max": 650000, "unit": "engagement", "includes": "Stakeholder interviews, architecture review, delivery plan, and costed options." },
-        { "tier": "Technical due diligence", "min": 400000, "max": 1200000, "unit": "engagement", "includes": "Codebase, infrastructure, and team assessment with a risk register." }
+        {
+          "tier": "Advisory session",
+          "min": 10000,
+          "max": 35000,
+          "unit": "engagement",
+          "includes": "A half-day working session, written findings, and a recommended next step."
+        },
+        {
+          "tier": "Discovery and roadmap",
+          "min": 60000,
+          "max": 200000,
+          "unit": "engagement",
+          "includes": "Stakeholder interviews, architecture review, delivery plan, and costed options."
+        },
+        {
+          "tier": "Technical due diligence",
+          "min": 120000,
+          "max": 400000,
+          "unit": "engagement",
+          "includes": "Codebase, infrastructure, and team assessment with a risk register."
+        }
       ],
       "typicalTimeline": "1 to 6 weeks",
-      "signals": ["consulting", "advice", "advisory", "roadmap", "audit", "due diligence", "strategy", "assessment", "review"]
+      "signals": [
+        "consulting",
+        "advice",
+        "advisory",
+        "roadmap",
+        "audit",
+        "due diligence",
+        "strategy",
+        "assessment",
+        "review"
+      ]
     },
     {
       "id": "websites-platforms",
       "name": "Websites and web platforms",
       "summary": "Marketing sites, customer portals, dashboards, and e-commerce.",
       "priceBands": [
-        { "tier": "Company or landing site", "min": 150000, "max": 400000, "unit": "project", "includes": "Up to 6 pages, responsive design, CMS or static content, SEO basics, contact handling." },
-        { "tier": "Business website with integrations", "min": 400000, "max": 950000, "unit": "project", "includes": "Custom design system, CMS, payments or booking, analytics, third-party integrations." },
-        { "tier": "Web platform or portal", "min": 950000, "max": 2500000, "unit": "project", "includes": "Accounts and roles, dashboards, workflow logic, admin tooling, API integrations." }
+        {
+          "tier": "Company or landing site",
+          "min": 45000,
+          "max": 120000,
+          "unit": "project",
+          "includes": "Up to 6 pages, responsive design, CMS or static content, SEO basics, contact handling."
+        },
+        {
+          "tier": "Business website with integrations",
+          "min": 120000,
+          "max": 350000,
+          "unit": "project",
+          "includes": "Custom design system, CMS, payments or booking, analytics, third-party integrations."
+        },
+        {
+          "tier": "Web platform or portal",
+          "min": 350000,
+          "max": 1200000,
+          "unit": "project",
+          "includes": "Accounts and roles, dashboards, workflow logic, admin tooling, API integrations."
+        }
       ],
       "typicalTimeline": "3 to 16 weeks",
-      "signals": ["website", "web", "site", "landing", "portal", "dashboard", "ecommerce", "e-commerce", "shop", "booking", "cms", "webpage"]
+      "signals": [
+        "website",
+        "web",
+        "site",
+        "landing",
+        "portal",
+        "dashboard",
+        "ecommerce",
+        "e-commerce",
+        "shop",
+        "booking",
+        "cms",
+        "webpage"
+      ]
     },
     {
       "id": "mobile-desktop-apps",
       "name": "Mobile and desktop applications",
       "summary": "iOS, Android, cross-platform, and internal operations tools.",
       "priceBands": [
-        { "tier": "Focused first release (MVP)", "min": 600000, "max": 1200000, "unit": "project", "includes": "One platform or cross-platform, core flows, authentication, backend integration, store submission." },
-        { "tier": "Full product build", "min": 1200000, "max": 2800000, "unit": "project", "includes": "Multiple roles, offline support, notifications, payments, analytics, and release pipeline." },
-        { "tier": "Enterprise or multi-team programme", "min": 2800000, "max": null, "unit": "project", "includes": "Quoted per phase. Complex integrations, compliance requirements, and long-running support." }
+        {
+          "tier": "Focused first release (MVP)",
+          "min": 250000,
+          "max": 600000,
+          "unit": "project",
+          "includes": "One platform or cross-platform, core flows, authentication, backend integration, store submission."
+        },
+        {
+          "tier": "Full product build",
+          "min": 600000,
+          "max": 1500000,
+          "unit": "project",
+          "includes": "Multiple roles, offline support, notifications, payments, analytics, and release pipeline."
+        },
+        {
+          "tier": "Enterprise or multi-team programme",
+          "min": 1500000,
+          "max": null,
+          "unit": "project",
+          "includes": "Quoted per phase. Complex integrations, compliance requirements, and long-running support."
+        }
       ],
       "typicalTimeline": "8 to 24 weeks",
-      "signals": ["app", "mobile", "android", "ios", "iphone", "desktop", "application", "play store", "app store", "flutter", "react native"]
+      "signals": [
+        "app",
+        "mobile",
+        "android",
+        "ios",
+        "iphone",
+        "desktop",
+        "application",
+        "play store",
+        "app store",
+        "flutter",
+        "react native"
+      ]
     },
     {
       "id": "ai-automation",
       "name": "AI systems and automation",
       "summary": "Assistants grounded in your own knowledge, document and workflow automation, speech and language systems.",
       "priceBands": [
-        { "tier": "AI pilot", "min": 250000, "max": 600000, "unit": "engagement", "includes": "One use case, grounded prototype, evaluation against your current process, and a cost model." },
-        { "tier": "Production AI workflow", "min": 600000, "max": 1800000, "unit": "project", "includes": "Data grounding, guardrails, human review points, monitoring, and integration into existing tools." },
-        { "tier": "Multi-process AI programme", "min": 1800000, "max": null, "unit": "project", "includes": "Several workflows, evaluation harness, and ongoing model and cost management." }
+        {
+          "tier": "AI pilot",
+          "min": 80000,
+          "max": 250000,
+          "unit": "engagement",
+          "includes": "One use case, grounded prototype, evaluation against your current process, and a cost model."
+        },
+        {
+          "tier": "Production AI workflow",
+          "min": 250000,
+          "max": 800000,
+          "unit": "project",
+          "includes": "Data grounding, guardrails, human review points, monitoring, and integration into existing tools."
+        },
+        {
+          "tier": "Multi-process AI programme",
+          "min": 800000,
+          "max": null,
+          "unit": "project",
+          "includes": "Several workflows, evaluation harness, and ongoing model and cost management."
+        }
       ],
       "typicalTimeline": "4 to 20 weeks",
-      "runningCostsNote": "Model and infrastructure usage is billed separately at cost, typically KES 15,000 to 150,000 per month depending on volume.",
-      "signals": ["ai", "artificial intelligence", "chatbot", "automation", "llm", "machine learning", "ml", "assistant", "rag", "speech", "transcription", "whisper", "voice", "nlp"]
+      "runningCostsNote": "Model and infrastructure usage is billed separately at cost, typically KES 3,000 to 40,000 per month depending on volume.",
+      "signals": [
+        "ai",
+        "artificial intelligence",
+        "chatbot",
+        "automation",
+        "llm",
+        "machine learning",
+        "ml",
+        "assistant",
+        "rag",
+        "speech",
+        "transcription",
+        "whisper",
+        "voice",
+        "nlp"
+      ]
     },
     {
       "id": "cloud-backend",
       "name": "Cloud and backend engineering",
       "summary": "APIs, databases, authentication, deployment pipelines, and reliability work.",
       "priceBands": [
-        { "tier": "Deployment and CI/CD setup", "min": 200000, "max": 480000, "unit": "engagement", "includes": "Containerisation, pipelines, environments, monitoring, and handover documentation." },
-        { "tier": "API and data platform", "min": 480000, "max": 1400000, "unit": "project", "includes": "API architecture, database design, authentication, background jobs, and observability." },
-        { "tier": "Reliability and scale programme", "min": 1400000, "max": null, "unit": "project", "includes": "Performance work, migrations, redundancy, and on-call readiness." }
+        {
+          "tier": "Deployment and CI/CD setup",
+          "min": 60000,
+          "max": 150000,
+          "unit": "engagement",
+          "includes": "Containerisation, pipelines, environments, monitoring, and handover documentation."
+        },
+        {
+          "tier": "API and data platform",
+          "min": 150000,
+          "max": 500000,
+          "unit": "project",
+          "includes": "API architecture, database design, authentication, background jobs, and observability."
+        },
+        {
+          "tier": "Reliability and scale programme",
+          "min": 500000,
+          "max": null,
+          "unit": "project",
+          "includes": "Performance work, migrations, redundancy, and on-call readiness."
+        }
       ],
       "typicalTimeline": "2 to 14 weeks",
-      "signals": ["cloud", "backend", "api", "database", "devops", "server", "infrastructure", "aws", "deployment", "ci/cd", "docker", "scaling", "hosting"]
+      "signals": [
+        "cloud",
+        "backend",
+        "api",
+        "database",
+        "devops",
+        "server",
+        "infrastructure",
+        "aws",
+        "deployment",
+        "ci/cd",
+        "docker",
+        "scaling",
+        "hosting"
+      ]
     },
     {
       "id": "product-design",
       "name": "Product and interface design",
       "summary": "Research, user flows, interface design, and design systems.",
       "priceBands": [
-        { "tier": "Interface refresh", "min": 110000, "max": 300000, "unit": "project", "includes": "Visual redesign of existing screens, responsive behaviour, and handover files." },
-        { "tier": "Product design engagement", "min": 300000, "max": 850000, "unit": "project", "includes": "Research, flows, prototypes, full interface design, and a reusable design system." }
+        {
+          "tier": "Interface refresh",
+          "min": 35000,
+          "max": 100000,
+          "unit": "project",
+          "includes": "Visual redesign of existing screens, responsive behaviour, and handover files."
+        },
+        {
+          "tier": "Product design engagement",
+          "min": 100000,
+          "max": 350000,
+          "unit": "project",
+          "includes": "Research, flows, prototypes, full interface design, and a reusable design system."
+        }
       ],
       "typicalTimeline": "2 to 10 weeks",
-      "signals": ["design", "ui", "ux", "interface", "prototype", "figma", "branding", "wireframe", "user research", "redesign"]
+      "signals": [
+        "design",
+        "ui",
+        "ux",
+        "interface",
+        "prototype",
+        "figma",
+        "branding",
+        "wireframe",
+        "user research",
+        "redesign"
+      ]
     }
   ],
-
   "engagementModels": [
-    { "name": "Advisory", "price": { "min": 30000, "max": 90000, "unit": "session" }, "bestFor": "A decision that needs an experienced second opinion before money is committed." },
-    { "name": "Fixed-scope project", "price": { "min": 150000, "max": 2800000, "unit": "project" }, "bestFor": "A defined outcome with clear boundaries, quoted as one figure after discovery." },
-    { "name": "Monthly partnership", "price": { "min": 120000, "max": 600000, "unit": "month" }, "bestFor": "Continuous delivery, maintenance, and improvement across several months." }
+    {
+      "name": "Advisory",
+      "price": {
+        "min": 10000,
+        "max": 35000,
+        "unit": "session"
+      },
+      "bestFor": "A decision that needs an experienced second opinion before money is committed."
+    },
+    {
+      "name": "Fixed-scope project",
+      "price": {
+        "min": 45000,
+        "max": 1500000,
+        "unit": "project"
+      },
+      "bestFor": "A defined outcome with clear boundaries, quoted as one figure after discovery."
+    },
+    {
+      "name": "Monthly partnership",
+      "price": {
+        "min": 35000,
+        "max": 200000,
+        "unit": "month"
+      },
+      "bestFor": "Continuous delivery, maintenance, and improvement across several months."
+    }
   ],
-
   "process": [
-    { "step": "Understand", "detail": "We map users, business goals, existing systems, constraints, and what success means." },
-    { "step": "Shape", "detail": "We reduce uncertainty into a scope, technical approach, milestones, and trade-offs." },
-    { "step": "Build", "detail": "We deliver in reviewable increments, test critical behaviour, and keep decisions visible." },
-    { "step": "Launch and learn", "detail": "We deploy, document, measure the result, and prioritise what should improve next." }
+    {
+      "step": "Understand",
+      "detail": "We map users, business goals, existing systems, constraints, and what success means."
+    },
+    {
+      "step": "Shape",
+      "detail": "We reduce uncertainty into a scope, technical approach, milestones, and trade-offs."
+    },
+    {
+      "step": "Build",
+      "detail": "We deliver in reviewable increments, test critical behaviour, and keep decisions visible."
+    },
+    {
+      "step": "Launch and learn",
+      "detail": "We deploy, document, measure the result, and prioritise what should improve next."
+    }
   ],
-
   "faqs": [
-    { "question": "What does a project cost?", "answer": "Work ranges from about KES 30,000 for a single advisory session to over KES 2.8M for a full platform or multi-phase programme. The figure depends on scope, integrations, and how much is already defined. We give a written quote after a short discovery call." },
-    { "question": "Why such a wide price range?", "answer": "A brochure website and a multi-role platform with payments and offline support are different pieces of work. Price follows scope, number of integrations, compliance needs, and how much discovery is still required." },
-    { "question": "How do payments work?", "answer": "Projects are milestone-based: a deposit to start, then payments tied to agreed deliverables. Advisory sessions are paid upfront. Monthly partnerships are invoiced monthly." },
-    { "question": "How long does a project take?", "answer": "A focused website takes 3 to 8 weeks, an application MVP 8 to 16 weeks, and larger platforms run longer and are split into phases. Discovery normally takes 1 to 3 weeks." },
-    { "question": "Who owns the code?", "answer": "You do, once the work is paid for. We keep rights to our pre-existing tools and general know-how. Ownership is set out in the engagement agreement." },
-    { "question": "Do you offer support after launch?", "answer": "Yes. Documentation and handover are part of delivery, and ongoing support is available as a monthly partnership from about KES 120,000 per month." },
-    { "question": "What technologies do you use?", "answer": "Commonly Next.js and React on the web, cross-platform frameworks for mobile, Python and Node for services and AI, and mainstream cloud providers. We choose the smallest dependable system for the job rather than a fixed stack." },
-    { "question": "Can you work with our existing team or codebase?", "answer": "Yes. We do technical audits, join existing teams, and take over legacy systems. That usually starts with a due diligence engagement." },
-    { "question": "Do you work with small budgets?", "answer": "Yes. If the budget will not cover the full idea, we say so and propose the smallest useful first version, or advise against building where a simpler tool would do." },
-    { "question": "Where are you based and who will I work with?", "answer": "Every engagement is staffed with senior people who have delivered systems in production. The people who scope your work are the people who build it." }
+    {
+      "question": "What does a project cost?",
+      "answer": "Work ranges from about KES 10,000 for a single advisory session to over KES 1.5M for a full platform or multi-phase programme. The figure depends on scope, integrations, and how much is already defined. We give a written quote after a short discovery call."
+    },
+    {
+      "question": "Why such a wide price range?",
+      "answer": "A brochure website and a multi-role platform with payments and offline support are different pieces of work. Price follows scope, number of integrations, compliance needs, and how much discovery is still required."
+    },
+    {
+      "question": "How do payments work?",
+      "answer": "Projects are milestone-based: a deposit to start, then payments tied to agreed deliverables. Advisory sessions are paid upfront. Monthly partnerships are invoiced monthly."
+    },
+    {
+      "question": "How long does a project take?",
+      "answer": "A focused website takes 3 to 8 weeks, an application MVP 8 to 16 weeks, and larger platforms run longer and are split into phases. Discovery normally takes 1 to 3 weeks."
+    },
+    {
+      "question": "Who owns the code?",
+      "answer": "You do, once the work is paid for. We keep rights to our pre-existing tools and general know-how. Ownership is set out in the engagement agreement."
+    },
+    {
+      "question": "Do you offer support after launch?",
+      "answer": "Yes. Documentation and handover are part of delivery, and ongoing support is available as a monthly partnership from about KES 35,000 per month."
+    },
+    {
+      "question": "What technologies do you use?",
+      "answer": "Commonly Next.js and React on the web, cross-platform frameworks for mobile, Python and Node for services and AI, and mainstream cloud providers. We choose the smallest dependable system for the job rather than a fixed stack."
+    },
+    {
+      "question": "Can you work with our existing team or codebase?",
+      "answer": "Yes. We do technical audits, join existing teams, and take over legacy systems. That usually starts with a due diligence engagement."
+    },
+    {
+      "question": "Do you work with small budgets?",
+      "answer": "Yes. If the budget will not cover the full idea, we say so and propose the smallest useful first version, or advise against building where a simpler tool would do."
+    },
+    {
+      "question": "Where are you based and who will I work with?",
+      "answer": "Every engagement is staffed with senior people who have delivered systems in production. The people who scope your work are the people who build it."
+    }
   ],
-
+  "siteMap": [
+    {
+      "path": "/",
+      "title": "Home",
+      "covers": "Overview, delivery record, service summary, AI approach, process, team, and the enquiry form.",
+      "signals": [
+        "home",
+        "about",
+        "overview",
+        "who are you",
+        "company",
+        "team",
+        "process"
+      ]
+    },
+    {
+      "path": "/services",
+      "title": "Services",
+      "covers": "Full catalogue: what each service delivers, the outcome, and the deliverables list.",
+      "signals": [
+        "services",
+        "catalogue",
+        "catalog",
+        "what do you do",
+        "offerings",
+        "deliverables"
+      ]
+    },
+    {
+      "path": "/services#technology-consulting",
+      "title": "Technology consulting",
+      "covers": "Discovery workshops, architecture recommendations, roadmaps, and due diligence.",
+      "signals": [
+        "consulting",
+        "advice",
+        "roadmap",
+        "due diligence",
+        "audit",
+        "strategy"
+      ]
+    },
+    {
+      "path": "/services#websites-platforms",
+      "title": "Websites and web platforms",
+      "covers": "Marketing sites, portals, dashboards, e-commerce, and integrations.",
+      "signals": [
+        "website",
+        "web",
+        "portal",
+        "dashboard",
+        "ecommerce",
+        "shop",
+        "booking"
+      ]
+    },
+    {
+      "path": "/services#mobile-desktop-apps",
+      "title": "Mobile and desktop applications",
+      "covers": "iOS, Android, cross-platform desktop, and internal operations tools.",
+      "signals": [
+        "app",
+        "mobile",
+        "android",
+        "ios",
+        "desktop"
+      ]
+    },
+    {
+      "path": "/services#ai-automation",
+      "title": "AI systems and automation",
+      "covers": "Assistants, workflow automation, speech and language, evaluation and controls.",
+      "signals": [
+        "ai",
+        "automation",
+        "chatbot",
+        "llm",
+        "machine learning",
+        "speech"
+      ]
+    },
+    {
+      "path": "/services#cloud-backend",
+      "title": "Cloud and backend engineering",
+      "covers": "APIs, databases, authentication, CI/CD, and reliability work.",
+      "signals": [
+        "cloud",
+        "backend",
+        "api",
+        "database",
+        "devops",
+        "infrastructure",
+        "hosting"
+      ]
+    },
+    {
+      "path": "/services#product-design",
+      "title": "Product and interface design",
+      "covers": "Research, flows, interface design, and design systems.",
+      "signals": [
+        "design",
+        "ui",
+        "ux",
+        "prototype",
+        "branding"
+      ]
+    },
+    {
+      "path": "/#process",
+      "title": "How we work",
+      "covers": "The four delivery stages: understand, shape, build, launch and learn.",
+      "signals": [
+        "process",
+        "how do you work",
+        "stages",
+        "methodology",
+        "steps",
+        "timeline"
+      ]
+    },
+    {
+      "path": "/#engagements",
+      "title": "Ways to work together",
+      "covers": "Advisory, fixed-scope project, and monthly partnership engagement models.",
+      "signals": [
+        "engagement",
+        "retainer",
+        "contract",
+        "partnership",
+        "hire",
+        "models"
+      ]
+    },
+    {
+      "path": "/#team",
+      "title": "The team",
+      "covers": "Who delivers the work and the disciplines involved.",
+      "signals": [
+        "team",
+        "people",
+        "who",
+        "staff",
+        "engineers",
+        "experience"
+      ]
+    },
+    {
+      "path": "/#contact",
+      "title": "Contact and enquiry form",
+      "covers": "The enquiry form, direct email, and phone number.",
+      "signals": [
+        "contact",
+        "quote",
+        "talk",
+        "call",
+        "email",
+        "enquiry",
+        "inquiry",
+        "get started",
+        "reach"
+      ]
+    },
+    {
+      "path": "/privacy",
+      "title": "Privacy policy",
+      "covers": "What is collected from the enquiry form, why, how long it is kept, and how to have it removed.",
+      "signals": [
+        "privacy",
+        "data",
+        "gdpr",
+        "personal information",
+        "cookies",
+        "tracking"
+      ]
+    },
+    {
+      "path": "/terms",
+      "title": "Terms of service",
+      "covers": "Site use, enquiry status, confidentiality, intellectual property, and liability.",
+      "signals": [
+        "terms",
+        "conditions",
+        "legal",
+        "liability",
+        "ownership",
+        "intellectual property",
+        "nda",
+        "confidential"
+      ]
+    }
+  ],
   "boundaries": {
     "neverDo": [
       "Do not invent prices outside the ranges in this file.",

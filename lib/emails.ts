@@ -10,7 +10,6 @@ export type EnquiryDetails = {
 };
 
 const ink = "#07131f";
-const inkSoft = "#0d2032";
 const mint = "#53d9a0";
 const paper = "#f2f5f3";
 const muted = "#6b7f8c";
@@ -39,7 +38,7 @@ function paragraphs(message: string) {
     .filter(Boolean)
     .map(
       (block) =>
-        `<p style="margin:0 0 14px;color:#243746;font-size:15px;line-height:1.7;">${block}</p>`,
+        `<p class="body-text" style="margin:0 0 12px;color:#243746;font-size:15px;line-height:1.68;">${block}</p>`,
     )
     .join("");
 }
@@ -57,13 +56,13 @@ function detailRow(label: string, value: string, href?: string) {
     ? `<a href="${href}" style="color:${ink};text-decoration:none;font-weight:600;">${value}</a>`
     : `<span style="color:${ink};font-weight:600;">${value}</span>`;
 
+  // Stacked rather than two columns: a label above its value survives a narrow screen without
+  // the value wrapping into a ragged column.
   return `
     <tr>
-      <td style="padding:13px 0;border-bottom:1px solid ${line};width:132px;vertical-align:top;">
-        <span style="color:${muted};font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;">${label}</span>
-      </td>
-      <td style="padding:13px 0;border-bottom:1px solid ${line};vertical-align:top;">
-        <span style="font-size:15px;line-height:1.5;">${content}</span>
+      <td style="padding:9px 0;border-bottom:1px solid ${line};">
+        <span class="label" style="display:block;margin-bottom:3px;color:${muted};font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;">${label}</span>
+        <span class="value" style="font-size:15px;line-height:1.5;">${content}</span>
       </td>
     </tr>`;
 }
@@ -83,42 +82,52 @@ function emailShell({ preheader, eyebrow, heading, intro, body, footer }: ShellO
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="color-scheme" content="light" />
+<meta name="color-scheme" content="light only" />
 <title>${escapeHtml(heading)}</title>
+<style>
+  /* Gmail, Apple Mail and Outlook mobile honour these; anything that ignores them keeps the
+     desktop sizes, which already fit a 600px column. */
+  @media only screen and (max-width: 480px) {
+    .wrap { padding: 14px 10px !important; }
+    .pad { padding: 22px 18px !important; }
+    .foot { padding: 14px 18px 6px !important; }
+    .h1 { font-size: 19px !important; line-height: 1.3 !important; }
+    .lead { font-size: 14px !important; }
+    .body-text { font-size: 14px !important; line-height: 1.62 !important; }
+    .label { font-size: 10px !important; }
+    .value { font-size: 14px !important; }
+    .small { font-size: 12px !important; }
+    .btn a { display: block !important; text-align: center !important; }
+  }
+</style>
 </head>
 <body style="margin:0;padding:0;background:${paper};">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(preheader)}</div>
-<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:${paper};padding:32px 16px;">
+<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:${paper};">
   <tr>
-    <td align="center">
+    <td class="wrap" align="center" style="padding:28px 16px;">
       <table role="presentation" cellpadding="0" cellspacing="0" width="600" style="width:600px;max-width:100%;border-collapse:separate;">
 
         <tr>
-          <td style="padding:38px 40px 34px;background:${inkSoft};background-image:linear-gradient(150deg,${inkSoft} 0%,${ink} 70%);border-radius:18px 18px 0 0;font-family:${fontStack};">
-            <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
-              <tr>
-                <td>
-                  <span style="color:${mint};font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;">${escapeHtml(eyebrow)}</span>
-                </td>
-                <td align="right">
-                  <span style="color:#ffffff;font-size:15px;font-weight:800;letter-spacing:-0.4px;">${siteConfig.name}</span>
-                </td>
-              </tr>
-            </table>
-            <h1 style="margin:20px 0 0;color:#ffffff;font-size:26px;font-weight:750;letter-spacing:-0.8px;line-height:1.25;">${escapeHtml(heading)}</h1>
-            <p style="margin:14px 0 0;color:#a9bbc6;font-size:14px;line-height:1.65;">${intro}</p>
+          <td class="pad" style="padding:26px 30px 0;background:#ffffff;border:1px solid ${line};border-bottom:0;border-radius:12px 12px 0 0;font-family:${fontStack};">
+            <p style="margin:0 0 18px;font-size:13px;font-weight:700;color:${ink};letter-spacing:-0.2px;">
+              ${siteConfig.name}
+              <span style="color:${muted};font-weight:400;"> · ${escapeHtml(eyebrow)}</span>
+            </p>
+            <h1 class="h1" style="margin:0;color:${ink};font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.3;">${escapeHtml(heading)}</h1>
+            <p class="lead body-text" style="margin:10px 0 0;color:${muted};font-size:15px;line-height:1.65;">${intro}</p>
           </td>
         </tr>
 
         <tr>
-          <td style="padding:34px 40px 38px;background:#ffffff;border-radius:0 0 18px 18px;font-family:${fontStack};">
+          <td class="pad" style="padding:22px 30px 28px;background:#ffffff;border:1px solid ${line};border-top:0;border-radius:0 0 12px 12px;font-family:${fontStack};">
             ${body}
           </td>
         </tr>
 
         <tr>
-          <td style="padding:22px 40px 8px;font-family:${fontStack};">
-            <p style="margin:0;color:${muted};font-size:12px;line-height:1.7;text-align:center;">${footer}</p>
+          <td class="foot" style="padding:16px 30px 6px;font-family:${fontStack};">
+            <p class="small" style="margin:0;color:${muted};font-size:12px;line-height:1.6;text-align:center;">${footer}</p>
           </td>
         </tr>
 
@@ -145,27 +154,27 @@ export function internalEnquiryEmail(details: EnquiryDetails) {
       ${detailRow("Received", escapeHtml(`${formatDate(submittedAt)} UTC`))}
     </table>
 
-    <div style="margin:28px 0 0;padding:22px 24px;background:#f7faf8;border:1px solid ${line};border-left:3px solid ${mint};border-radius:12px;">
-      <span style="display:block;margin-bottom:12px;color:#46606f;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;">The brief</span>
+    <div style="margin:20px 0 0;padding:16px 18px;background:#f7faf8;border-left:3px solid ${mint};border-radius:8px;">
+      <span class="label" style="display:block;margin-bottom:8px;color:#46606f;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;">The brief</span>
       ${paragraphs(message)}
     </div>
 
-    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0 0;">
+    <table class="btn" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:20px 0 0;">
       <tr>
-        <td style="border-radius:999px;background:${ink};">
-          <a href="mailto:${safeEmail}?subject=${encodeURIComponent(`Re: your ${service} enquiry`)}" style="display:inline-block;padding:14px 26px;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;">Reply to ${safeName}</a>
+        <td style="border-radius:8px;background:${ink};">
+          <a href="mailto:${safeEmail}?subject=${encodeURIComponent(`Re: your ${service} enquiry`)}" style="display:inline-block;padding:12px 22px;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;">Reply to ${safeName}</a>
         </td>
       </tr>
     </table>`;
 
   return {
     // Name first: inbox lists truncate the tail, and who wrote in matters more than the category.
-    subject: `${name} — ${service} enquiry`,
+    subject: `New enquiry from ${name} — ${service}`,
     html: emailShell({
       preheader: `${name} asked about ${service}.`,
-      eyebrow: "New project enquiry",
-      heading: `${safeName} wants to talk about ${safeService.toLowerCase()}.`,
-      intro: "Sent from the website contact form. Reply directly to reach the sender.",
+      eyebrow: "New enquiry",
+      heading: `New enquiry from ${safeName}`,
+      intro: `Sent from the website contact form about ${safeService.toLowerCase()}. Reply to this email to reach them directly.`,
       body,
       footer: `${siteConfig.name} website · ${escapeHtml(siteConfig.siteUrl)}`,
     }),
@@ -296,42 +305,42 @@ export function clientReceiptEmail(details: EnquiryDetails) {
     .map(
       ([number, title, copy]) => `
       <tr>
-        <td style="padding:0 14px 0 0;width:34px;vertical-align:top;">
-          <span style="color:${mint};font-size:12px;font-weight:800;letter-spacing:1px;">${number}</span>
+        <td style="padding:0 10px 0 0;width:26px;vertical-align:top;">
+          <span style="color:${mint};font-size:12px;font-weight:700;">${number}</span>
         </td>
-        <td style="padding:0 0 18px;vertical-align:top;">
-          <strong style="display:block;color:${ink};font-size:15px;font-weight:700;letter-spacing:-0.2px;">${title}</strong>
-          <span style="display:block;margin-top:4px;color:#5b6f7c;font-size:13.5px;line-height:1.6;">${copy}</span>
+        <td style="padding:0 0 12px;vertical-align:top;">
+          <strong class="value" style="display:block;color:${ink};font-size:14.5px;font-weight:700;letter-spacing:-0.2px;">${title}</strong>
+          <span class="small" style="display:block;margin-top:2px;color:#5b6f7c;font-size:13px;line-height:1.55;">${copy}</span>
         </td>
       </tr>`,
     )
     .join("");
 
   const body = `
-    <p style="margin:0 0 22px;color:#243746;font-size:15px;line-height:1.7;">
-      Thanks ${safeFirstName} — your enquiry about <strong>${safeService}</strong> is with us. Here is what happens next.
+    <p class="body-text" style="margin:0 0 16px;color:#243746;font-size:15px;line-height:1.68;">
+      Thanks ${safeFirstName} — we have received your enquiry about <strong>${safeService}</strong>. Here is what happens next.
     </p>
 
-    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 26px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 18px;">
       ${steps}
     </table>
 
-    <div style="padding:22px 24px;background:#f7faf8;border:1px solid ${line};border-left:3px solid ${mint};border-radius:12px;">
-      <span style="display:block;margin-bottom:12px;color:#46606f;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;">What you sent us</span>
+    <div style="padding:16px 18px;background:#f7faf8;border-left:3px solid ${mint};border-radius:8px;">
+      <span class="label" style="display:block;margin-bottom:8px;color:#46606f;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;">What you sent us</span>
       ${paragraphs(message)}
     </div>
 
-    <p style="margin:26px 0 0;color:#5b6f7c;font-size:13.5px;line-height:1.7;">
+    <p class="small" style="margin:18px 0 0;color:#5b6f7c;font-size:13px;line-height:1.6;">
       Need to add something? Just reply to this email — it reaches the same people.
     </p>`;
 
   return {
     subject: `We received your enquiry — ${siteConfig.name}`,
     html: emailShell({
-      preheader: `Thanks ${firstName}. A person is reading your brief and will reply within one working day.`,
+      preheader: `Thanks ${firstName}. We have your enquiry and will reply within one working day.`,
       eyebrow: "Enquiry received",
-      heading: "Thanks — we have your brief.",
-      intro: `A person will read it and reply within one working day.`,
+      heading: "We have received your enquiry",
+      intro: `Thanks ${safeFirstName}. A person will read it and reply within one working day.`,
       body,
       footer: `${siteConfig.name} · ${escapeHtml(siteConfig.contactEmail)} · ${escapeHtml(siteConfig.siteUrl)}`,
     }),

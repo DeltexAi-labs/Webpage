@@ -2222,7 +2222,58 @@ a:hover .arrow-icon {
   border-radius: 14px;
   font-size: 0.82rem;
   line-height: 1.62;
+}
+
+.assistant-turn p {
+  margin: 0;
   white-space: pre-wrap;
+}
+
+.assistant-turn p + p,
+.assistant-turn ul + p,
+.assistant-turn p + ul {
+  margin-top: 8px;
+}
+
+.assistant-turn ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.assistant-turn li {
+  position: relative;
+  padding-left: 14px;
+}
+
+.assistant-turn li + li {
+  margin-top: 5px;
+}
+
+.assistant-turn li::before {
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--mint-strong);
+  content: "";
+}
+
+.assistant-turn code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.assistant-turn a {
+  color: var(--mint);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
 }
 
 .assistant-user {
@@ -2231,6 +2282,10 @@ a:hover .arrow-icon {
   background: var(--mint);
   color: var(--ink);
   font-weight: 650;
+}
+
+.assistant-user li::before {
+  background: var(--ink);
 }
 
 .assistant-assistant {
@@ -2290,24 +2345,36 @@ a:hover .arrow-icon {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.assistant-input input {
+.assistant-input {
+  align-items: flex-end;
+}
+
+.assistant-input textarea {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 40px;
-  padding: 0 13px;
+  max-height: 132px;
+  padding: 10px 13px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
   outline: none;
   background: rgba(255, 255, 255, 0.05);
   color: var(--white);
+  font-family: inherit;
   font-size: 0.82rem;
+  font-weight: 650;
+  line-height: 1.5;
+  resize: none;
+  /* Grows with the text up to max-height, then scrolls, so nothing is hidden while typing. */
+  field-sizing: content;
 }
 
-.assistant-input input::placeholder {
+.assistant-input textarea::placeholder {
   color: #7f95a3;
+  font-weight: 500;
 }
 
-.assistant-input input:focus {
+.assistant-input textarea:focus {
   border-color: rgba(159, 248, 207, 0.5);
 }
 
