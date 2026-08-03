@@ -351,6 +351,15 @@
       "answer": "Every engagement is staffed with senior people who have delivered systems in production. The people who scope your work are the people who build it."
     }
   ],
+  "people": {
+    "founders": [
+      { "name": "Emmanuel Juma", "role": "Co-founder" },
+      { "name": "Justina Ngina", "role": "Co-founder" }
+    ],
+    "teamNote": "Engagements are staffed with senior people who have delivered systems in production — machine learning and data engineers, software architects, product designers, and delivery leads. The people who scope the work are the people who build it.",
+    "signals": ["founder", "founders", "founded", "co-founder", "owner", "owners", "ceo", "director", "who runs", "who started", "who owns", "leadership", "management", "behind the company", "team", "people", "who are you", "staff"]
+  },
+
   "siteMap": [
     {
       "path": "/",

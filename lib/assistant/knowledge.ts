@@ -72,7 +72,10 @@ function scoreSignals(haystack: string, signals: string[]) {
  * Retrieval runs over the question plus recent turns, so a follow-up like "and how long does that
  * take?" still resolves to the subject established earlier in the conversation.
  */
-export function retrieveContext(question: string, recentTurns: string[] = [], limit = 5) {
+/** Ceiling on retrieved context. Keeps each request inside the provider's per-minute token budget. */
+const MAX_CONTEXT_CHARS = 3200;
+
+export function retrieveContext(question: string, recentTurns: string[] = [], limit = 4) {
   const focus = question.toLowerCase();
   // Earlier turns inform the topic but must not outweigh the question actually being asked.
   const backdrop = recentTurns.join(" ").toLowerCase().slice(-1200);
@@ -131,6 +134,17 @@ export function retrieveContext(question: string, recentTurns: string[] = [], li
     picked.unshift(priceBlock.join("\n"));
   }
 
+  if (scoreSignals(focus, data.people.signals) > 0) {
+    picked.unshift(
+      [
+        "THE PEOPLE",
+        `Founders: ${data.people.founders.map((person) => `${person.name} (${person.role})`).join(" and ")}.`,
+        data.people.teamNote,
+        "Do not add titles, biographies, or histories that are not written here.",
+      ].join("\n"),
+    );
+  }
+
   // A broad question deserves the whole catalogue, not whichever single service scored highest.
   const broadIntent =
     /(what (do you|services)|other services|services do you|everything|full (list|range)|offerings|else do you|all your)/.test(
@@ -156,7 +170,16 @@ export function retrieveContext(question: string, recentTurns: string[] = [], li
     );
   }
 
-  return picked.join("\n\n---\n\n");
+  // Drop whole blocks from the tail rather than cutting one mid-sentence.
+  const assembled: string[] = [];
+  let used = 0;
+  for (const block of picked) {
+    if (used + block.length > MAX_CONTEXT_CHARS && assembled.length > 0) break;
+    assembled.push(block);
+    used += block.length;
+  }
+
+  return assembled.join("\n\n---\n\n");
 }
 
 /** Ranks the site's own pages and anchors so answers can point at the right place to read more. */
@@ -199,7 +222,8 @@ export function systemPrompt() {
     `- ${data.boundaries.escalate}`,
     `- Contact: ${siteConfig.contactEmail} or ${siteConfig.contactPhone}. The enquiry form is at ${siteConfig.siteUrl}/#contact.`,
     "- Use the conversation so far to resolve follow-up questions. If the visitor says 'that one' or 'how long', work out what they mean from earlier turns instead of asking them to repeat themselves.",
-    "- Answer only from the reference material. If it does not cover the question, say so plainly and point to the contact form.",
+    "- Answer only from the reference material. When it does not cover something, never give a bare refusal: say in one short sentence what you can confirm, then offer the contact form or email as the way to get the rest. Stay warm and useful.",
+    "- Do not say 'I cannot answer that' on its own, and do not apologise repeatedly. One brief acknowledgement, then the most helpful thing you can offer.",
     "- Do not mention prices, costs, budgets, or figures unless the visitor asked about them in their latest message. Describe what a service does and what it delivers instead, and offer to give ranges if they want them.",
     "- When they do ask about cost: give ranges with the currency, name the tier each range belongs to, and say the final figure comes from a written quote after discovery.",
     "- Every figure you state must appear verbatim in the reference material. Never average, round, interpolate, or estimate a number that is not written there. If the material has no figure for something, say it needs scoping instead of guessing.",

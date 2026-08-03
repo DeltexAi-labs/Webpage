@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { streamAnswer, type ChatTurn } from "@/lib/assistant/graph";
 import { sanitizeUntrusted } from "@/lib/assistant/guard";
+import { siteConfig } from "@/lib/site";
 import { clientIpFrom } from "@/lib/shield";
 
 export const runtime = "nodejs";
@@ -87,18 +88,19 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         console.error("Assistant request failed", error);
 
-        // A provider rate limit is temporary and worth saying so; anything else is not.
+        // Every model in the chain is exhausted, or something else broke. Either way the visitor
+        // gets a route to a person rather than an apology.
         const detail = error instanceof Error ? error.message : "";
-        const busy = /rate.?limit|429|too many requests/i.test(detail);
+        const quotaSpent = /rate.?limit|429|too many requests|quota/i.test(detail);
 
         // Once bytes are on the wire the status is already 200, so the notice goes in the body.
         controller.enqueue(
           encoder.encode(
             started
-              ? "\n\n(That answer was cut short. Please try again or use the contact form.)"
-              : busy
-                ? "I am handling a lot of questions right now. Give me a few seconds and ask again, or use the contact form."
-                : "The assistant could not answer that just now. Please try again or use the contact form.",
+              ? `\n\n— I lost the rest of that answer. Ask again, or email ${siteConfig.contactEmail} and the team will pick it up.`
+              : quotaSpent
+                ? `I have hit my usage limit for today, so I cannot answer this one. The team can help directly: use the contact form at ${siteConfig.siteUrl}/#contact or email ${siteConfig.contactEmail}, and you will get a reply within one working day.`
+                : `Something went wrong on my side, so I could not answer that. Try once more, or reach the team at ${siteConfig.contactEmail} and they will help.`,
           ),
         );
       } finally {
