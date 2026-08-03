@@ -354,7 +354,7 @@
   "people": {
     "founders": [
       { "name": "Emmanuel Juma", "role": "Founder and Owner" },
-      { "name": "Justina Ngina", "role": "Co-founder" },
+      { "name": "Justina Ngina", "role": "Co-founder" }
 
     ],
     "teamNote": "Engagements are staffed with senior people who have delivered systems in production — machine learning and data engineers, software architects, product designers, and delivery leads. The people who scope the work are the people who build it.",
