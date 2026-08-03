@@ -86,12 +86,19 @@ export async function POST(request: NextRequest) {
         }
       } catch (error) {
         console.error("Assistant request failed", error);
+
+        // A provider rate limit is temporary and worth saying so; anything else is not.
+        const detail = error instanceof Error ? error.message : "";
+        const busy = /rate.?limit|429|too many requests/i.test(detail);
+
         // Once bytes are on the wire the status is already 200, so the notice goes in the body.
         controller.enqueue(
           encoder.encode(
             started
               ? "\n\n(That answer was cut short. Please try again or use the contact form.)"
-              : "The assistant could not answer that just now. Please try again or use the contact form.",
+              : busy
+                ? "I am handling a lot of questions right now. Give me a few seconds and ask again, or use the contact form."
+                : "The assistant could not answer that just now. Please try again or use the contact form.",
           ),
         );
       } finally {

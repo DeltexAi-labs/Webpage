@@ -7,8 +7,12 @@ import { retrieveContext, systemPrompt } from "@/lib/assistant/knowledge";
 
 export type ChatTurn = { role: "user" | "assistant"; content: string };
 
-/** Hard ceiling on the reply. The prompt also asks for brevity; this is the guarantee. */
-export const MAX_ANSWER_TOKENS = 1000;
+/**
+ * Hard ceiling on the reply. The prompt asks for at most 180 words (~260 tokens), so 700 is
+ * generous headroom — and the provider counts the requested ceiling against the per-minute token
+ * budget, so asking for less keeps the assistant available under bursts.
+ */
+export const MAX_ANSWER_TOKENS = 700;
 
 /** Turns kept verbatim. Enough for a multi-step conversation without unbounded prompt growth. */
 export const HISTORY_TURNS = 12;

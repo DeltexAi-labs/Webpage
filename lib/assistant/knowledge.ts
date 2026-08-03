@@ -38,15 +38,25 @@ function formatBand(band: PriceBand) {
   return `${band.tier}: ${range} per ${band.unit}. ${band.includes}`;
 }
 
-function serviceBlock(service: Service) {
+/**
+ * Price bands are omitted unless the visitor asked about cost. Withholding the figures from the
+ * context is what stops the assistant volunteering them — a prompt rule alone is not reliable.
+ */
+function serviceBlock(service: Service, includePrices: boolean) {
   const lines = [
     `SERVICE: ${service.name}`,
     service.summary,
     `Typical timeline: ${service.typicalTimeline}`,
     `Page: ${siteConfig.siteUrl}/services#${service.id}`,
-    ...service.priceBands.map((band) => `- ${formatBand(band)}`),
   ];
-  if (service.runningCostsNote) lines.push(`Running costs: ${service.runningCostsNote}`);
+
+  if (includePrices) {
+    lines.push(...service.priceBands.map((band) => `- ${formatBand(band)}`));
+    if (service.runningCostsNote) lines.push(`Running costs: ${service.runningCostsNote}`);
+  } else {
+    lines.push(`Tiers available: ${service.priceBands.map((band) => band.tier).join(", ")}.`);
+  }
+
   return lines.join("\n");
 }
 
@@ -69,20 +79,26 @@ export function retrieveContext(question: string, recentTurns: string[] = [], li
 
   const words = focus.split(/[^a-z0-9+]+/).filter((word) => word.length > 2);
 
+  // Only the question itself can open the pricing door. A price mentioned earlier in the
+  // conversation must not make every later answer quote figures again.
+  const priceIntent =
+    /(price|cost|costs|charge|budget|quote|quotation|fee|pricing|how much|ksh|kes|shilling|expensive|afford|rate|invoice|pay)/.test(
+      focus,
+    );
+
   const services = data.services.map((service) => {
-    let score = scoreSignals(focus, service.signals) + scoreSignals(backdrop, service.signals) * 0.4;
-    if (focus.includes(service.name.toLowerCase())) score += 4;
-    return { score, block: serviceBlock(service) };
+    const score = scoreSignals(focus, service.signals) + scoreSignals(backdrop, service.signals) * 0.4;
+    const bonus = focus.includes(service.name.toLowerCase()) ? 4 : 0;
+    return { score: score + bonus, block: serviceBlock(service, priceIntent) };
   });
 
   const faqs = data.faqs.map((faq) => {
     const text = `${faq.question} ${faq.answer}`.toLowerCase();
+    const isPricingFaq = /KES/.test(faq.answer);
+    if (isPricingFaq && !priceIntent) return { score: 0, block: "" };
     const score = words.reduce((total, word) => (text.includes(word) ? total + 1 : total), 0);
     return { score, block: `FAQ: ${faq.question}\n${faq.answer}` };
   });
-
-  const priceIntent =
-    /(price|cost|charge|budget|quote|fee|how much|ksh|kes|shilling|expensive|afford|rate)/.test(focus);
 
   const picked = [...services, ...faqs]
     .filter((entry) => entry.score > 0)
@@ -92,7 +108,7 @@ export function retrieveContext(question: string, recentTurns: string[] = [], li
 
   const matchedService = services.some((entry) => entry.score > 0);
 
-  if (priceIntent || picked.length === 0) {
+  if (priceIntent) {
     // When a specific service matched, the company-wide and engagement figures are withheld: they
     // span every service, and the model would otherwise quote them for one concrete build.
     const priceBlock = matchedService
@@ -115,8 +131,19 @@ export function retrieveContext(question: string, recentTurns: string[] = [], li
     picked.unshift(priceBlock.join("\n"));
   }
 
+  // A broad question deserves the whole catalogue, not whichever single service scored highest.
+  const broadIntent =
+    /(what (do you|services)|other services|services do you|everything|full (list|range)|offerings|else do you|all your)/.test(
+      focus,
+    );
+
+  if (broadIntent || picked.length < 2) {
+    picked.push(
+      ["ALL SERVICES", ...data.services.map((service) => `- ${service.name}: ${service.summary}`)].join("\n"),
+    );
+  }
+
   if (picked.length < 2) {
-    picked.push(data.services.map((service) => `${service.name}: ${service.summary}`).join("\n"));
     picked.push(data.process.map((step) => `${step.step}: ${step.detail}`).join("\n"));
   }
 
@@ -173,9 +200,9 @@ export function systemPrompt() {
     `- Contact: ${siteConfig.contactEmail} or ${siteConfig.contactPhone}. The enquiry form is at ${siteConfig.siteUrl}/#contact.`,
     "- Use the conversation so far to resolve follow-up questions. If the visitor says 'that one' or 'how long', work out what they mean from earlier turns instead of asking them to repeat themselves.",
     "- Answer only from the reference material. If it does not cover the question, say so plainly and point to the contact form.",
-    "- Always give prices as ranges with the currency, and say the final figure comes from a written quote after discovery.",
+    "- Do not mention prices, costs, budgets, or figures unless the visitor asked about them in their latest message. Describe what a service does and what it delivers instead, and offer to give ranges if they want them.",
+    "- When they do ask about cost: give ranges with the currency, name the tier each range belongs to, and say the final figure comes from a written quote after discovery.",
     "- Every figure you state must appear verbatim in the reference material. Never average, round, interpolate, or estimate a number that is not written there. If the material has no figure for something, say it needs scoping instead of guessing.",
-    "- When a request covers several pieces of work, quote each piece from its own SERVICE band and name the tier you are quoting.",
     "- When a page on this site covers the topic, name it and give its link once.",
     "- Be brief: at most 180 words, plain sentences, no marketing language, no emoji. Use a short list only when comparing options.",
   ].join("\n");

@@ -10,13 +10,12 @@ import { Spinner } from "@/components/spinner";
 type Turn = { role: "user" | "assistant"; content: string };
 
 const SUGGESTIONS = [
-  "What does a website cost?",
-  "How long does an app take?",
+  "What services do you offer?",
+  "How do you run a project?",
   "Can you build an AI assistant?",
 ];
 
-const GREETING =
-  "I'm Cipher. Ask me about our services, timelines, or how we work. For a firm quote, the contact form is the fastest route.";
+const GREETING = "I'm Cipher. Ask me about our services, timelines, or how we work.";
 
 /** Characters revealed per animation frame. Fast enough to keep up, slow enough to read as typing. */
 const REVEAL_RATE = 3;
@@ -222,7 +221,7 @@ export function AssistantWidget() {
           </form>
 
           <p className="assistant-footnote">
-            Answers are indicative. Prices are confirmed in writing after a discovery call.
+            Cipher answers from this site&rsquo;s own material. Anything firm is confirmed in writing.
           </p>
         </section>
       ) : null}
