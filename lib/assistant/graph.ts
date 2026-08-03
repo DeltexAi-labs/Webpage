@@ -69,7 +69,27 @@ const workflow = new StateGraph(AssistantState)
 
 const app = workflow.compile();
 
-export async function answerQuestion(question: string, history: ChatTurn[] = []) {
-  const result = await app.invoke({ question, history });
-  return result.answer;
+/**
+ * Yields the answer token by token as the model produces it. streamEvents surfaces the model's
+ * own chunks from inside the graph, so the visitor sees text within a few hundred milliseconds
+ * instead of waiting for the whole reply.
+ */
+export async function* streamAnswer(question: string, history: ChatTurn[] = []) {
+  const events = app.streamEvents({ question, history }, { version: "v2" });
+
+  for await (const event of events) {
+    if (event.event !== "on_chat_model_stream") continue;
+
+    const chunk = event.data?.chunk as { content?: unknown } | undefined;
+    const text =
+      typeof chunk?.content === "string"
+        ? chunk.content
+        : Array.isArray(chunk?.content)
+          ? chunk.content
+              .map((part) => (typeof part === "object" && part && "text" in part ? String(part.text) : ""))
+              .join("")
+          : "";
+
+    if (text) yield text;
+  }
 }

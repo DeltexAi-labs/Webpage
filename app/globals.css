@@ -2311,7 +2311,6 @@ a:hover .arrow-icon {
   border-color: rgba(159, 248, 207, 0.5);
 }
 
-.assistant-mic,
 .assistant-send {
   display: grid;
   width: 40px;
@@ -2327,13 +2326,11 @@ a:hover .arrow-icon {
   transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
 }
 
-.assistant-mic svg,
 .assistant-send svg {
   width: 17px;
   height: 17px;
 }
 
-.assistant-mic:hover:not(:disabled),
 .assistant-send:hover:not(:disabled) {
   border-color: rgba(159, 248, 207, 0.5);
   color: var(--white);
@@ -2345,27 +2342,31 @@ a:hover .arrow-icon {
   color: var(--ink);
 }
 
-.assistant-mic:disabled,
 .assistant-send:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
 
-.assistant-mic[data-recording] {
-  border-color: #ff9d94;
-  background: rgba(255, 138, 128, 0.16);
-  color: #ff9d94;
-  animation: assistant-pulse 1.3s ease-in-out infinite;
+/* Cursor that trails the streaming text, the way a terminal caret does. */
+.assistant-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 2px;
+  border-radius: 1px;
+  background: var(--mint);
+  vertical-align: text-bottom;
+  animation: assistant-caret 1s steps(2, start) infinite;
 }
 
-@keyframes assistant-pulse {
+@keyframes assistant-caret {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 138, 128, 0.34);
+    opacity: 1;
   }
 
   50% {
-    box-shadow: 0 0 0 7px rgba(255, 138, 128, 0);
+    opacity: 0;
   }
 }
 
@@ -3712,7 +3713,7 @@ a:hover .arrow-icon {
   .toast,
   .mobile-menu-sheet,
   .assistant-panel,
-  .assistant-mic[data-recording] {
+  .assistant-caret {
     animation: none;
   }
 

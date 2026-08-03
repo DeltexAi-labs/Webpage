@@ -17,21 +17,25 @@ const SUGGESTIONS = [
 const GREETING =
   "Ask me about our services, timelines, or price ranges. For a firm quote, the contact form is the fastest route.";
 
+/** Characters revealed per animation frame. Fast enough to keep up, slow enough to read as typing. */
+const REVEAL_RATE = 3;
+
 export function AssistantWidget() {
   const [open, setOpen] = useState(false);
   const [turns, setTurns] = useState<Turn[]>([]);
+  const [streamed, setStreamed] = useState("");
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
-  const [recording, setRecording] = useState(false);
+  const [waiting, setWaiting] = useState(false);
   const [error, setError] = useState("");
 
-  const streamRef = useRef<MediaStream | null>(null);
-  const recorderRef = useRef<MediaRecorder | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const pendingRef = useRef("");
+  const frameRef = useRef<number | null>(null);
 
   useEffect(() => {
-    logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" });
-  }, [turns, busy]);
+    logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
+  }, [turns, streamed, waiting]);
 
   useEffect(() => {
     if (!open) return;
@@ -42,12 +46,40 @@ export function AssistantWidget() {
     return () => document.removeEventListener("keydown", handleKey);
   }, [open]);
 
-  // Release the microphone if the component unmounts mid-recording.
   useEffect(() => {
     return () => {
-      streamRef.current?.getTracks().forEach((track) => track.stop());
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
     };
   }, []);
+
+  // Network chunks arrive in bursts; draining a buffer on each frame turns them into even typing.
+  function startReveal() {
+    if (frameRef.current !== null) return;
+
+    const tick = () => {
+      if (pendingRef.current.length === 0) {
+        frameRef.current = null;
+        return;
+      }
+
+      const slice = pendingRef.current.slice(0, REVEAL_RATE);
+      pendingRef.current = pendingRef.current.slice(slice.length);
+      setStreamed((previous) => previous + slice);
+      frameRef.current = requestAnimationFrame(tick);
+    };
+
+    frameRef.current = requestAnimationFrame(tick);
+  }
+
+  function flushReveal() {
+    if (frameRef.current !== null) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
+    const remaining = pendingRef.current;
+    pendingRef.current = "";
+    return remaining;
+  }
 
   async function ask(question: string) {
     const trimmed = question.trim();
@@ -58,6 +90,9 @@ export function AssistantWidget() {
     setInput("");
     setError("");
     setBusy(true);
+    setWaiting(true);
+    setStreamed("");
+    pendingRef.current = "";
 
     try {
       const response = await fetch("/api/assistant/chat", {
@@ -65,73 +100,40 @@ export function AssistantWidget() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: trimmed, history }),
       });
-      const result = (await response.json()) as { answer?: string; message?: string };
 
-      if (!response.ok || !result.answer) {
+      if (!response.ok || !response.body) {
+        const result = (await response.json().catch(() => ({}))) as { message?: string };
         throw new Error(result.message || "The assistant could not answer that.");
       }
 
-      setTurns((previous) => [...previous, { role: "assistant", content: result.answer as string }]);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let full = "";
+
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        if (!chunk) continue;
+
+        full += chunk;
+        setWaiting(false);
+        pendingRef.current += chunk;
+        startReveal();
+      }
+
+      // Show anything still queued immediately, then commit the finished turn.
+      flushReveal();
+      setStreamed("");
+      setTurns((previous) => [...previous, { role: "assistant", content: full.trim() }]);
     } catch (caught) {
+      flushReveal();
+      setStreamed("");
       setError(caught instanceof Error ? caught.message : "Something went wrong.");
     } finally {
+      setWaiting(false);
       setBusy(false);
-    }
-  }
-
-  async function toggleRecording() {
-    if (recording) {
-      recorderRef.current?.stop();
-      return;
-    }
-
-    setError("");
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      streamRef.current = stream;
-
-      const recorder = new MediaRecorder(stream);
-      const chunks: Blob[] = [];
-      recorderRef.current = recorder;
-
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) chunks.push(event.data);
-      };
-
-      recorder.onstop = async () => {
-        stream.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-        setRecording(false);
-
-        const blob = new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
-        if (blob.size < 1200) {
-          setError("That was too short to transcribe.");
-          return;
-        }
-
-        setBusy(true);
-        try {
-          const form = new FormData();
-          form.append("audio", blob, "question.webm");
-          const response = await fetch("/api/assistant/voice", { method: "POST", body: form });
-          const result = (await response.json()) as { text?: string; message?: string };
-
-          if (!response.ok || !result.text) {
-            throw new Error(result.message || "That recording could not be transcribed.");
-          }
-
-          setBusy(false);
-          await ask(result.text);
-        } catch (caught) {
-          setBusy(false);
-          setError(caught instanceof Error ? caught.message : "Transcription failed.");
-        }
-      };
-
-      recorder.start();
-      setRecording(true);
-    } catch {
-      setError("Microphone access was blocked. Type your question instead.");
     }
   }
 
@@ -167,7 +169,14 @@ export function AssistantWidget() {
               </p>
             ))}
 
-            {busy ? (
+            {streamed ? (
+              <p className="assistant-turn assistant-assistant" aria-live="polite">
+                {streamed}
+                <span className="assistant-caret" aria-hidden="true" />
+              </p>
+            ) : null}
+
+            {waiting ? (
               <p className="assistant-turn assistant-assistant assistant-pending">
                 <Spinner size={14} label="Thinking" /> Thinking…
               </p>
@@ -187,28 +196,15 @@ export function AssistantWidget() {
           </div>
 
           <form className="assistant-input" onSubmit={handleSubmit}>
-            <button
-              type="button"
-              className="assistant-mic"
-              onClick={() => void toggleRecording()}
-              disabled={busy && !recording}
-              data-recording={recording || undefined}
-              aria-label={recording ? "Stop recording and send" : "Ask by voice"}
-            >
-              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <rect x="7.4" y="2.4" width="5.2" height="9.2" rx="2.6" stroke="currentColor" strokeWidth="1.6" />
-                <path d="M4.6 9.4a5.4 5.4 0 0 0 10.8 0M10 14.8v2.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              </svg>
-            </button>
             <input
               value={input}
               onChange={(event) => setInput(event.target.value)}
-              placeholder={recording ? "Recording… tap the mic to send" : "Ask a question"}
+              placeholder="Ask a question"
               maxLength={700}
-              disabled={busy || recording}
+              disabled={busy}
               aria-label="Your question"
             />
-            <button type="submit" className="assistant-send" disabled={busy || recording || !input.trim()} aria-label="Send question">
+            <button type="submit" className="assistant-send" disabled={busy || !input.trim()} aria-label="Send question">
               <ArrowIcon />
             </button>
           </form>
