@@ -2206,6 +2206,40 @@ a:hover .arrow-icon {
   gap: 10px;
   padding: 18px;
   overflow-y: auto;
+  /* Keeps a wheel gesture inside the panel once the log hits its end. */
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(83, 217, 160, 0.38) transparent;
+}
+
+/* A hairline thumb that sits inside the padding and only firms up on interaction, so a long
+   conversation gains a scroll indicator without a grey system bar cutting into the panel. */
+.assistant-log::-webkit-scrollbar {
+  width: 10px;
+}
+
+.assistant-log::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.assistant-log::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  /* Mint, matching the accent used across the site rather than a neutral grey. */
+  background: rgba(83, 217, 160, 0.34);
+  background-clip: content-box;
+  transition: background 160ms ease;
+}
+
+.assistant-log:hover::-webkit-scrollbar-thumb {
+  background: rgba(83, 217, 160, 0.55);
+  background-clip: content-box;
+}
+
+.assistant-log::-webkit-scrollbar-thumb:hover,
+.assistant-log::-webkit-scrollbar-thumb:active {
+  background: var(--mint-strong);
+  background-clip: content-box;
 }
 
 .assistant-greeting {
