@@ -65,83 +65,64 @@ export function renderOgImage({ eyebrow, title, description, tags = defaultTags 
           }}
         />
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 96,
-                height: 96,
-                overflow: "hidden",
-                // Round crop: the artwork is a circular emblem on a black field.
-                border: "1px solid rgba(255,255,255,0.16)",
-                borderRadius: 96,
-                background: "#05080d",
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders raw img only. */}
-              <img
-                src={logoDataUri}
-                width={96}
-                height={96}
-                alt=""
-                // Satori does not clip children to the parent radius, so the image rounds itself.
-                style={{ objectFit: "cover", borderRadius: 96 }}
-              />
-            </div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ display: "flex", fontSize: 34, fontWeight: 700, letterSpacing: -1.2 }}>
-                {siteConfig.name}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  marginTop: 4,
-                  color: "#7f95a3",
-                  fontSize: 18,
-                  letterSpacing: 3,
-                  textTransform: "uppercase",
-                }}
-              >
-                Consulting · Software · AI
-              </div>
-            </div>
+        {/* The mark is the subject of the card: centred and large, with the wordmark beneath it. */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            flexGrow: 1,
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- Satori renders raw img only. */}
+          <img
+            src={logoDataUri}
+            width={268}
+            height={268}
+            alt=""
+            // Round crop: the artwork is a circular emblem on a black field.
+            style={{ objectFit: "cover", borderRadius: 268 }}
+          />
+
+          <div
+            style={{
+              display: "flex",
+              marginTop: 30,
+              fontSize: 52,
+              fontWeight: 700,
+              letterSpacing: -1.8,
+              textAlign: "center",
+            }}
+          >
+            {siteConfig.name}
           </div>
 
           <div
             style={{
               display: "flex",
-              alignItems: "center",
-              padding: "11px 22px",
-              border: "1px solid rgba(255,255,255,0.16)",
-              borderRadius: 999,
+              marginTop: 12,
               color: "#9ff8cf",
-              fontSize: 20,
-              letterSpacing: 2,
+              fontSize: 21,
+              letterSpacing: 5,
               textTransform: "uppercase",
             }}
           >
             {eyebrow}
           </div>
-        </div>
 
-        <div style={{ display: "flex", flexDirection: "column", maxWidth: 940 }}>
-          <div style={{ display: "flex", fontSize: 68, fontWeight: 700, letterSpacing: -3, lineHeight: 1.08 }}>
-            {title}
-          </div>
           <div
             style={{
               display: "flex",
-              marginTop: 26,
-              maxWidth: 780,
+              marginTop: 18,
+              maxWidth: 760,
               color: "#a9bbc6",
-              fontSize: 26,
-              lineHeight: 1.5,
+              fontSize: 24,
+              lineHeight: 1.45,
+              textAlign: "center",
             }}
           >
-            {description}
+            {title}
           </div>
         </div>
 
@@ -152,12 +133,12 @@ export function renderOgImage({ eyebrow, title, description, tags = defaultTags 
                 key={tag}
                 style={{
                   display: "flex",
-                  padding: "10px 20px",
+                  padding: "9px 18px",
                   border: "1px solid rgba(255,255,255,0.14)",
                   borderRadius: 999,
                   background: "rgba(255,255,255,0.05)",
                   color: "#c6d5df",
-                  fontSize: 21,
+                  fontSize: 19,
                 }}
               >
                 {tag}
