@@ -33,7 +33,7 @@ export function SiteFooter() {
           ) : (
             <span>Contact channel configured at launch</span>
           )}
-          <a href={`tel:${siteConfig.contactPhone.replace(/[^\d+]/g, "")}`}>{siteConfig.contactPhone}</a>
+          <a href={`tel:${siteConfig.contactPhone.replace(/[^\d+]/g, "")}`}>0793472960</a>
           {siteConfig.bookingUrl ? <a href={siteConfig.bookingUrl}>Book a consultation</a> : null}
         </div>
       </div>

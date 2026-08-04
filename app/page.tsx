@@ -447,7 +447,7 @@ export default function Home() {
               </a>
               <a href={contactPhoneHref}>
                 <span>Phone</span>
-                <strong>{siteConfig.contactPhone}</strong>
+                <strong>0793472960</strong>
               </a>
             </div>
             <p className="contact-honesty">
