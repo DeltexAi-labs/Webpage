@@ -146,7 +146,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           Questions go to <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a> or{" "}
-          {siteConfig.contactPhone}.
+          <a href={`tel:${siteConfig.contactPhone.replace(/[^\d+]/g, "")}`}>0793472960</a>.
         </p>
       </>
     ),
