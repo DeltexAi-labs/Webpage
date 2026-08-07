@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
 import { AssistantWidget } from "@/components/assistant-widget";
+import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/lib/site";
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         {children}
         <SiteFooter />
         <AssistantWidget />
+        <CookieConsentBanner />
       </body>
     </html>
   );
