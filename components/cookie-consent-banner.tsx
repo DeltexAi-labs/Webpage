@@ -11,11 +11,11 @@ export function CookieConsentBanner() {
   const [marketing, setMarketing] = useState(true);
 
   useEffect(() => {
-    // Check if user has already consented
+    // Check consent after client hydration
+    // This intentionally sets state in effect to handle hydration mismatch with localStorage
     const hasConsented = cookieConsent.hasConsented();
-    if (!hasConsented) {
-      setIsVisible(true);
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsVisible(!hasConsented);
   }, []);
 
   const handleAcceptAll = () => {
@@ -50,7 +50,12 @@ export function CookieConsentBanner() {
       )}
 
       {/* Banner */}
-      <div className="cookie-consent-banner" role="dialog" aria-label="Cookie consent">
+      <div
+        className="cookie-consent-banner"
+        role="dialog"
+        aria-label="Cookie consent"
+        suppressHydrationWarning
+      >
         <div className="cookie-consent-content">
           {!showDetails ? (
             <>
@@ -58,7 +63,7 @@ export function CookieConsentBanner() {
                 <h2 className="cookie-consent-title">Privacy & Cookies</h2>
                 <p className="cookie-consent-description">
                   We use cookies to enhance your experience and analyze site usage. We do not track you across
-                  other sites. By clicking "Accept All", you consent to our use of cookies. You can customize
+                  other sites. By clicking &quot;Accept All&quot;, you consent to our use of cookies. You can customize
                   your preferences or learn more in our{" "}
                   <Link href="/privacy" className="cookie-consent-link">
                     privacy policy

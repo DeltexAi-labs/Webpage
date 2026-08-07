@@ -99,7 +99,8 @@ export const cookieConsent = {
     if (preferences.analytics) {
       // Send analytics event
       if (typeof window !== "undefined" && "gtag" in window) {
-        (window as any).gtag("event", eventName, data);
+        const gtag = (window as unknown as { gtag: (event: string, name: string, data?: Record<string, unknown>) => void }).gtag;
+        gtag("event", eventName, data);
       }
     }
   },
